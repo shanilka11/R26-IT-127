@@ -6,8 +6,23 @@ st.set_page_config(page_title="Railway Fraud Dashboard", layout="wide")
 
 st.title("🚆 Sri Lanka Railway Fraud Detection Dashboard")
 
-# Load results dataset
-df = pd.read_csv("outputs/fraud_detection_results.csv")
+df = pd.read_csv("backend/outputs/fraud_detection_results.csv")
+metrics_df = pd.read_csv("backend/outputs/model_metrics.csv")
+
+# Convert metrics to dictionary
+metrics = dict(zip(metrics_df["Metric"], metrics_df["Value"]))
+
+st.subheader("📌 Model Performance Summary")
+
+m1, m2, m3, m4, m5 = st.columns(5)
+
+m1.metric("Accuracy", f"{metrics.get('Accuracy', 0) * 100:.2f}%")
+m2.metric("Precision", f"{metrics.get('Precision', 0) * 100:.2f}%")
+m3.metric("Recall", f"{metrics.get('Recall', 0) * 100:.2f}%")
+m4.metric("F1 Score", f"{metrics.get('F1 Score', 0) * 100:.2f}%")
+m5.metric("Detection Speed", f"{metrics.get('Detection Speed (sec)', 0):.3f} sec")
+
+st.markdown("---")
 
 # Sidebar Filters
 st.sidebar.header("🔍 Search & Filter")
@@ -27,6 +42,8 @@ if selected_route != "All":
     filtered_df = filtered_df[filtered_df["Route"] == selected_route]
 
 # KPI Section
+st.subheader("📊 Transaction Summary")
+
 col1, col2, col3, col4 = st.columns(4)
 
 col1.metric("Total Records", len(filtered_df))
@@ -96,6 +113,10 @@ monthly_chart = px.line(
 
 st.plotly_chart(monthly_chart, use_container_width=True)
 
+# Model Metrics Table
+st.subheader("🧪 Model Evaluation Metrics")
+st.dataframe(metrics_df, use_container_width=True)
+
 # Top High Risk Records
 st.subheader("🚨 Top High Risk Records")
 
@@ -104,7 +125,6 @@ st.dataframe(high_risk, use_container_width=True)
 
 # Download Button
 suspicious_df = filtered_df[filtered_df["Fraud_Label"] == "Suspicious"]
-
 csv = suspicious_df.to_csv(index=False).encode("utf-8")
 
 st.download_button(
@@ -124,19 +144,19 @@ st.subheader("🤖 Live Fraud Risk Prediction")
 
 st.write("Enter new passenger transaction details and predict fraud risk instantly.")
 
-col1, col2, col3 = st.columns(3)
+p1, p2, p3 = st.columns(3)
 
-with col1:
+with p1:
     input_hour = st.number_input("Hour", min_value=0, max_value=23, value=8)
     input_passenger_count = st.number_input("Passenger Count", min_value=0, value=250)
     input_available_seats = st.number_input("Available Seats", min_value=0, value=150)
 
-with col2:
+with p2:
     input_temperature = st.number_input("Temperature", min_value=0, max_value=50, value=30)
     input_rainfall = st.number_input("Rainfall", min_value=0, value=0)
     input_route = st.selectbox("Route for Prediction", sorted(df["Route"].dropna().unique().tolist()))
 
-with col3:
+with p3:
     input_ticket_type = st.selectbox("Ticket Type for Prediction", sorted(df["Ticket_Type"].dropna().unique().tolist()))
     input_class_type = st.selectbox("Class Type for Prediction", sorted(df["Class_Type"].dropna().unique().tolist()))
 
@@ -173,7 +193,7 @@ if st.button("Predict Fraud Risk"):
 
     st.success("Prediction Completed")
 
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Prediction", prediction)
-    c2.metric("Risk Score", f"{risk_score}/100")
-    c3.metric("Risk Level", risk_level)
+    r1, r2, r3 = st.columns(3)
+    r1.metric("Prediction", prediction)
+    r2.metric("Risk Score", f"{risk_score}/100")
+    r3.metric("Risk Level", risk_level)

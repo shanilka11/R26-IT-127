@@ -1,0 +1,6 @@
+Metric,Value
+Accuracy,0.9414
+Precision,0.1421
+Recall,0.3122
+F1 Score,0.1953
+Detection Speed (sec),3.3126
