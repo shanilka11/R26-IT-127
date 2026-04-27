@@ -8,11 +8,17 @@ st.title("🚆 Sri Lanka Railway Fraud Detection Dashboard")
 
 df = pd.read_csv("backend/outputs/fraud_detection_results.csv")
 metrics_df = pd.read_csv("backend/outputs/model_metrics.csv")
+comparison_df = pd.read_csv("backend/outputs/model_comparison.csv")
 
-# Convert metrics to dictionary
 metrics = dict(zip(metrics_df["Metric"], metrics_df["Value"]))
 
-st.subheader("📌 Model Performance Summary")
+best_model = comparison_df.sort_values(by="F1 Score", ascending=False).iloc[0]["Model"]
+
+st.subheader("🏆 Best Performing Model")
+st.success(f"Best Performing Model: {best_model}")
+st.info("Selection Criteria: Highest F1 Score")
+
+st.subheader("📌 Best Model Performance Summary")
 
 m1, m2, m3, m4, m5 = st.columns(5)
 
@@ -24,7 +30,39 @@ m5.metric("Detection Speed", f"{metrics.get('Detection Speed (sec)', 0):.3f} sec
 
 st.markdown("---")
 
-# Sidebar Filters
+st.subheader("🧪 Model Comparison Results")
+st.dataframe(comparison_df, use_container_width=True)
+
+comparison_long = comparison_df.melt(
+    id_vars="Model",
+    value_vars=["Accuracy", "Precision", "Recall", "F1 Score"],
+    var_name="Metric",
+    value_name="Score"
+)
+
+comparison_chart = px.bar(
+    comparison_long,
+    x="Model",
+    y="Score",
+    color="Metric",
+    barmode="group",
+    title="Model Comparison: Accuracy, Precision, Recall and F1 Score"
+)
+
+st.plotly_chart(comparison_chart, use_container_width=True)
+
+speed_chart = px.bar(
+    comparison_df,
+    x="Model",
+    y="Detection Speed (sec)",
+    color="Model",
+    title="Detection Speed Comparison"
+)
+
+st.plotly_chart(speed_chart, use_container_width=True)
+
+st.markdown("---")
+
 st.sidebar.header("🔍 Search & Filter")
 
 train_ids = ["All"] + sorted(df["Train_ID"].dropna().unique().tolist())
@@ -41,7 +79,6 @@ if selected_train != "All":
 if selected_route != "All":
     filtered_df = filtered_df[filtered_df["Route"] == selected_route]
 
-# KPI Section
 st.subheader("📊 Transaction Summary")
 
 col1, col2, col3, col4 = st.columns(4)
@@ -53,7 +90,6 @@ col4.metric("High Risk", len(filtered_df[filtered_df["Risk_Level"] == "High"]))
 
 st.markdown("---")
 
-# Risk Level Chart
 st.subheader("📊 Risk Level Distribution")
 
 risk_data = filtered_df["Risk_Level"].value_counts().reset_index()
@@ -69,7 +105,6 @@ risk_chart = px.bar(
 
 st.plotly_chart(risk_chart, use_container_width=True)
 
-# Fraud Status Pie Chart
 st.subheader("🥧 Fraud Status Distribution")
 
 fraud_chart = px.pie(
@@ -80,7 +115,6 @@ fraud_chart = px.pie(
 
 st.plotly_chart(fraud_chart, use_container_width=True)
 
-# Monthly Fraud Trend
 st.subheader("📈 Monthly Fraud Trend")
 
 month_order = [
@@ -113,17 +147,11 @@ monthly_chart = px.line(
 
 st.plotly_chart(monthly_chart, use_container_width=True)
 
-# Model Metrics Table
-st.subheader("🧪 Model Evaluation Metrics")
-st.dataframe(metrics_df, use_container_width=True)
-
-# Top High Risk Records
 st.subheader("🚨 Top High Risk Records")
 
 high_risk = filtered_df.sort_values(by="Risk_Score", ascending=False).head(20)
 st.dataframe(high_risk, use_container_width=True)
 
-# Download Button
 suspicious_df = filtered_df[filtered_df["Fraud_Label"] == "Suspicious"]
 csv = suspicious_df.to_csv(index=False).encode("utf-8")
 
@@ -134,11 +162,9 @@ st.download_button(
     mime="text/csv"
 )
 
-# Full Filtered Data
 st.subheader("📄 Full Filtered Result Data")
 st.dataframe(filtered_df, use_container_width=True)
 
-# Live Prediction Section
 st.markdown("---")
 st.subheader("🤖 Live Fraud Risk Prediction")
 
