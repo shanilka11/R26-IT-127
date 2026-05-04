@@ -1,0 +1,20 @@
+{
+  "preds_sample": {
+    "Anuradhapura": 3299475.75,
+    "Colombo Fort": 3297415.5,
+    "Galle": 3299343.75,
+    "Jaffna": 3299516.75,
+    "Kandy": 3299306.0,
+    "Matara": 3299579.75,
+    "Negombo": 3299469.5
+  },
+  "actuals_sample": {
+    "Anuradhapura": 2468870.25,
+    "Colombo Fort": 14809230.0,
+    "Galle": 2465529.25,
+    "Jaffna": 2469930.0,
+    "Kandy": 2464591.25,
+    "Matara": 2471581.75,
+    "Negombo": 2468719.75
+  }
+}

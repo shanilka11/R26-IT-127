@@ -1,0 +1,204 @@
+{
+  "best_model": "GNN",
+  "best_model_metrics": {
+    "MAE": 15982.15931919643,
+    "RMSE": 16332.724264247296,
+    "MAPE": 40.27053757352196
+  },
+  "improvements": {
+    "mae": {
+      "LSTM": 0.0,
+      "GNN": 52.54804433857421,
+      "Hybrid": 42.990293472499616
+    },
+    "rmse": {
+      "LSTM": 0.0,
+      "GNN": 51.74753211971927,
+      "Hybrid": 42.40708898028983
+    },
+    "hybrid_mae_improvement_pct": 42.990293472499616,
+    "hybrid_rmse_improvement_pct": 42.40708898028983,
+    "seat_utilization_increase_pct": 7.375157596714615
+  },
+  "seat_allocation": {
+    "static_utilization_pct": 98.15530467506152,
+    "optimized_utilization_pct": 90.91619626574034,
+    "static_allocation": [
+      {
+        "route": "Colombo Fort->Jaffna",
+        "demand": 7407.0,
+        "capacity": 8147.0,
+        "allocated": 7676.666666666667,
+        "unmet": 0.0
+      },
+      {
+        "route": "Colombo Fort->Galle",
+        "demand": 7324.0,
+        "capacity": 8056.0,
+        "allocated": 7676.666666666667,
+        "unmet": 0.0
+      },
+      {
+        "route": "Colombo Fort->Matara",
+        "demand": 6916.0,
+        "capacity": 7607.0,
+        "allocated": 7607.0,
+        "unmet": 0.0
+      },
+      {
+        "route": "Colombo Fort->Negombo",
+        "demand": 6889.0,
+        "capacity": 7577.0,
+        "allocated": 7577.0,
+        "unmet": 0.0
+      },
+      {
+        "route": "Colombo Fort->Kandy",
+        "demand": 6729.0,
+        "capacity": 7401.0,
+        "allocated": 7401.0,
+        "unmet": 0.0
+      },
+      {
+        "route": "Colombo Fort->Anuradhapura",
+        "demand": 6611.0,
+        "capacity": 7272.0,
+        "allocated": 7272.0,
+        "unmet": 0.0
+      }
+    ],
+    "optimized_allocation": [
+      {
+        "route": "Colombo Fort->Jaffna",
+        "allocated": 7407.0,
+        "capacity": 8147.0,
+        "demand": 7407.0,
+        "unmet": 0.0
+      },
+      {
+        "route": "Colombo Fort->Galle",
+        "allocated": 7324.0,
+        "capacity": 8056.0,
+        "demand": 7324.0,
+        "unmet": 0.0
+      },
+      {
+        "route": "Colombo Fort->Matara",
+        "allocated": 6916.0,
+        "capacity": 7607.0,
+        "demand": 6916.0,
+        "unmet": 0.0
+      },
+      {
+        "route": "Colombo Fort->Negombo",
+        "allocated": 6889.0,
+        "capacity": 7577.0,
+        "demand": 6889.0,
+        "unmet": 0.0
+      },
+      {
+        "route": "Colombo Fort->Kandy",
+        "allocated": 6729.0,
+        "capacity": 7401.0,
+        "demand": 6729.0,
+        "unmet": 0.0
+      },
+      {
+        "route": "Colombo Fort->Anuradhapura",
+        "allocated": 6611.0,
+        "capacity": 7272.0,
+        "demand": 6611.0,
+        "unmet": 0.0
+      }
+    ]
+  },
+  "summary_report": [
+    "Hybrid model improved MAE by 42.99%",
+    "Hybrid model improved RMSE by 42.41%",
+    "Seat utilization increased by 7.38%",
+    "Best model by MAE: GNN"
+  ],
+  "comparison_table": [
+    {
+      "model": "Baseline",
+      "MAE": 33680.71788912274,
+      "RMSE": 33848.47445475833,
+      "MAPE": 82.55920945546542
+    },
+    {
+      "model": "LSTM",
+      "MAE": 34279.89460100447,
+      "RMSE": 34444.962038548045,
+      "MAPE": 84.04059567484435
+    },
+    {
+      "model": "GNN",
+      "MAE": 15982.15931919643,
+      "RMSE": 16332.724264247296,
+      "MAPE": 40.27053757352196
+    },
+    {
+      "model": "Hybrid",
+      "MAE": 19201.278424944194,
+      "RMSE": 19494.321774258293,
+      "MAPE": 46.74725570033445
+    }
+  ],
+  "per_day": {
+    "dates": [
+      "2025-12-25",
+      "2025-12-26",
+      "2025-12-27",
+      "2025-12-28",
+      "2025-12-29",
+      "2025-12-30",
+      "2025-12-31"
+    ],
+    "actuals": [
+      43597.0,
+      43191.0,
+      35316.0,
+      35626.0,
+      42535.0,
+      42986.0,
+      41876.0
+    ],
+    "baseline": [
+      7051.710682305832,
+      7051.710682305832,
+      7051.710682305832,
+      7051.710682305832,
+      7051.710682305832,
+      7051.710682305832,
+      7051.710682305832
+    ],
+    "lstm": [
+      6458.49462890625,
+      6463.67724609375,
+      6462.36181640625,
+      6451.626953125,
+      6439.99755859375,
+      6441.029296875,
+      6450.55029296875
+    ],
+    "gnn": [
+      56714.587890625,
+      56714.587890625,
+      56714.587890625,
+      56714.587890625,
+      56714.587890625,
+      56714.587890625,
+      56714.587890625
+    ],
+    "hybrid": [
+      21535.322607421876,
+      21538.950439453125,
+      21538.029638671876,
+      21530.515234375,
+      21522.374658203127,
+      21523.096875000003,
+      21529.761572265626
+    ]
+  },
+  "latest_route_date": "2025-12-31"
+}
