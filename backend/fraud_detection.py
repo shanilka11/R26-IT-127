@@ -63,9 +63,7 @@ def evaluate_model(model_name, true_labels, predicted_labels, speed):
 
 results = []
 
-# ==================================================
 # 1. ISOLATION FOREST
-# ==================================================
 print("\nTraining Isolation Forest...")
 
 isolation_model = IsolationForest(
@@ -92,9 +90,7 @@ if_scores = isolation_model.decision_function(X_scaled)
 df["IF_Risk_Score"] = ((if_scores.max() - if_scores) / (if_scores.max() - if_scores.min())) * 100
 df["IF_Risk_Score"] = df["IF_Risk_Score"].round(2)
 
-# ==================================================
 # 2. ONE-CLASS SVM
-# ==================================================
 print("\nTraining One-Class SVM...")
 
 svm_model = OneClassSVM(
@@ -121,9 +117,7 @@ df["SVM_Fraud_Label"] = pd.Series(svm_pred).map({0: "Normal", 1: "Suspicious"})
 svm_speed = end_time - start_time
 results.append(evaluate_model("One-Class SVM", df["True_Label"], svm_pred, svm_speed))
 
-# ==================================================
 # 3. AUTOENCODER
-# ==================================================
 print("\nTraining Autoencoder...")
 
 autoencoder = MLPRegressor(
@@ -152,9 +146,7 @@ df["AE_Reconstruction_Error"] = reconstruction_error.round(4)
 ae_speed = end_time - start_time
 results.append(evaluate_model("Autoencoder", df["True_Label"], ae_pred, ae_speed))
 
-# ==================================================
 # MODEL COMPARISON
-# ==================================================
 comparison_df = pd.DataFrame(results)
 
 best_model_row = comparison_df.sort_values(by="F1 Score", ascending=False).iloc[0]

@@ -1,10 +1,69 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import base64
 
 st.set_page_config(page_title="Railway Fraud Dashboard", layout="wide")
 
-st.title("🚆 Sri Lanka Railway Fraud Detection Dashboard")
+def image_to_base64(image_path):
+    with open(image_path, "rb") as img:
+        return base64.b64encode(img.read()).decode()
+
+train_img = image_to_base64("frontend/train.jpg")
+
+st.markdown(f"""
+<style>
+.hero {{
+    background: linear-gradient(90deg, rgba(5,15,35,0.95), rgba(5,15,35,0.75), rgba(5,15,35,0.25)),
+                url("data:image/jpeg;base64,{train_img}");
+    background-size: cover;
+    background-position: center;
+    border-radius: 22px;
+    padding: 45px;
+    margin-bottom: 35px;
+    border: 1px solid rgba(96,165,250,0.25);
+}}
+
+.hero h1 {{
+    color: white;
+    font-size: 40px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}}
+
+.hero p {{
+    color: #cbd5e1;
+    font-size: 16px;
+    margin-bottom: 22px;
+}}
+
+.badges {{
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}}
+
+.badge {{
+    background: rgba(15, 35, 70, 0.75);
+    border: 1px solid rgba(96,165,250,0.35);
+    padding: 11px 18px;
+    border-radius: 14px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+}}
+</style>
+
+<div class="hero">
+    <h1>🚆 Sri Lanka Railway Fraud Detection Dashboard</h1>
+    <p>AI-powered ticket fraud detection and risk-aware passenger verification system</p>
+    <div class="badges">
+        <div class="badge">🤖 AI Powered</div>
+        <div class="badge">📊 Data Driven</div>
+        <div class="badge">⚡ Real-time</div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 df = pd.read_csv("backend/outputs/fraud_detection_results.csv")
 metrics_df = pd.read_csv("backend/outputs/model_metrics.csv")
@@ -15,7 +74,7 @@ metrics = dict(zip(metrics_df["Metric"], metrics_df["Value"]))
 best_model = comparison_df.sort_values(by="F1 Score", ascending=False).iloc[0]["Model"]
 
 st.subheader("🏆 Best Performing Model")
-st.success(f"Best Performing Model: {best_model}")
+st.success(f"🏆 Best Performing Model: {best_model}")
 st.info("Selection Criteria: Highest F1 Score")
 
 st.subheader("📌 Best Model Performance Summary")
