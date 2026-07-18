@@ -1,0 +1,12 @@
+[
+  { "name": "Colombo Fort", "lat": 6.9344, "lon": 79.8428, "line": "COASTAL" },
+  { "name": "Maradana", "lat": 6.9271, "lon": 79.8643, "line": "MAIN" },
+  { "name": "Ragama", "lat": 7.0290, "lon": 79.9220, "line": "MAIN" },
+  { "name": "Gampaha", "lat": 7.0917, "lon": 79.9999, "line": "MAIN" },
+  { "name": "Polgahawela", "lat": 7.3327, "lon": 80.2950, "line": "MAIN" },
+  { "name": "Kandy", "lat": 7.2906, "lon": 80.6337, "line": "MAIN" },
+  { "name": "Galle", "lat": 6.0535, "lon": 80.2210, "line": "COASTAL" },
+  { "name": "Matara", "lat": 5.9549, "lon": 80.5550, "line": "COASTAL" },
+  { "name": "Anuradhapura", "lat": 8.3114, "lon": 80.4037, "line": "NORTHERN" },
+  { "name": "Jaffna", "lat": 9.6615, "lon": 80.0255, "line": "NORTHERN" }
+]

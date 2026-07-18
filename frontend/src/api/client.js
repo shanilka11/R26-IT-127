@@ -1,0 +1,15 @@
+import axios from "axios";
+const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || "http://127.0.0.1:5000/api" });
+export const getTrains = () => api.get("/trains");
+export const seedTrains = () => api.post("/trains/seed");
+export const simulateTelemetry = (trainId, routeId) => api.post("/telemetry/simulate", { trainId, routeId });
+export const getTrainTelemetry = (trainId) => api.get(`/telemetry/${trainId}`);
+export const predictTrainDelay = (trainId) => api.post(`/predictions/${trainId}`);
+export const getPredictions = () => api.get("/predictions");
+export const getNearestStation = (lat, lon) => api.get(`/journey/nearest-station?lat=${lat}&lon=${lon}`);
+export const planJourney = (payload) => api.post("/journey/plan", payload);
+export const getGtfsStatus = () => Promise.resolve({ data: { ready: false } });
+export const pullIngest = (payload) => api.post("/ingest/pull", payload);
+export const startIngestScheduler = (payload) => api.post("/ingest/start", payload);
+export const stopIngestScheduler = () => api.post("/ingest/stop");
+export const getIngestStatus = () => api.get("/ingest/status");
