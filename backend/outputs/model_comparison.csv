@@ -1,4 +1,0 @@
-Model,Accuracy,Precision,Recall,F1 Score,Detection Speed (sec)
-Isolation Forest,0.9414,0.1421,0.3122,0.1953,3.3858
-One-Class SVM,0.9427,0.1607,0.3596,0.2222,7.6978
-Autoencoder,0.9363,0.0909,0.1998,0.125,7.5444

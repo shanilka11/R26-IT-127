@@ -1,0 +1,67 @@
+{
+  "feature_cols": [
+    "ratio_deviation",
+    "multi_scan_flag",
+    "online_missing_seat",
+    "hour",
+    "is_night",
+    "is_weekend",
+    "passenger_prior_fraud_count",
+    "passenger_prior_fraud_rate",
+    "passenger_txn_number",
+    "route_freq",
+    "travel_class_1st Class",
+    "travel_class_2nd Class",
+    "travel_class_3rd Class",
+    "ticket_type_Disability Concession",
+    "ticket_type_Full Fare",
+    "ticket_type_Government Employee Concession",
+    "ticket_type_Season Ticket",
+    "ticket_type_Senior Citizen Concession",
+    "ticket_type_Student Concession",
+    "payment_method_Cash",
+    "payment_method_Online",
+    "booking_channel_Online",
+    "booking_channel_Station Counter"
+  ],
+  "official_ratio": {
+    "Full Fare": 1.0,
+    "Season Ticket": 0.5,
+    "Student Concession": 0.4,
+    "Senior Citizen Concession": 0.5,
+    "Government Employee Concession": 0.6,
+    "Disability Concession": 0.3
+  },
+  "score_bounds": {
+    "iso": [
+      0.3727124749152477,
+      0.6689431874915666
+    ],
+    "ocsvm": [
+      -16.635841977853342,
+      28.706488715689826
+    ],
+    "ae": [
+      0.0022545618218713028,
+      5.914256723199229
+    ]
+  },
+  "ae_threshold": 0.36134764493988153,
+  "recommended_risk_threshold": 45.0,
+  "route_freq": {
+    "Colombo Fort - Kandy": 0.09755102040816327,
+    "Colombo Fort - Anuradhapura": 0.09316326530612246,
+    "Maradana - Puttalam": 0.09091836734693877,
+    "Colombo Fort - Badulla": 0.08153061224489797,
+    "Kandy - Badulla (Upcountry local)": 0.07989795918367347,
+    "Colombo Fort - Matara": 0.07459183673469388,
+    "Colombo Fort - Galle": 0.07173469387755102,
+    "Colombo Fort - Negombo (Coastal Line local)": 0.06938775510204082,
+    "Colombo Fort - Kurunegala": 0.06877551020408164,
+    "Colombo Fort - Vavuniya": 0.06479591836734694,
+    "Colombo Fort - Ratnapura Line": 0.055714285714285716,
+    "Colombo Fort - Batticaloa": 0.05183673469387755,
+    "Colombo Fort - Trincomalee": 0.05142857142857143,
+    "Colombo Fort - Jaffna": 0.0486734693877551
+  }
+}
