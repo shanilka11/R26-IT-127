@@ -757,7 +757,7 @@ https://desktop.github.com/
 Open Command Prompt, PowerShell, Git Bash, or the VS Code terminal.
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone https://github.com/shanilka11/R26-IT-127.git
 ```
 
 Enter the project:
