@@ -1,0 +1,203 @@
+.df-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--bg);
+    padding: 50px 24px;
+}
+
+.df-heading {
+    color: var(--text-primary);
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+.df-subheading {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+}
+
+.df-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+    gap: 16px;
+    max-width: 760px;
+    width: 100%;
+}
+
+.df-input {
+    height: 50px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+    font-size: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.df-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.df-input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: var(--focus-ring);
+}
+
+.df-checkbox-row {
+    display: flex;
+    gap: 24px;
+    max-width: 760px;
+    width: 100%;
+    margin-top: 16px;
+}
+
+.df-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.df-hint {
+    color: var(--text-secondary);
+    font-size: 12px;
+    max-width: 760px;
+    margin-top: 12px;
+}
+
+.df-submit-btn {
+    margin-top: 20px;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+    color: var(--button-text);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.df-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ---- Result modal ---- */
+.df-result-modal .ant-modal-content {
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+.df-result-modal .ant-modal-close {
+    color: var(--text-secondary);
+}
+
+.df-result-title {
+    color: var(--text-primary);
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.df-total-card {
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.df-total-card span {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.df-route-summary span {
+    color: var(--text-primary);
+}
+
+.df-capacity-row span {
+    color: var(--text-primary);
+}
+
+.df-total-card strong {
+    color: var(--text-primary);
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.df-class-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.df-class-card {
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+
+.df-class-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.df-class-header span {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.df-class-header strong {
+    color: var(--accent-blue);
+    font-size: 14px;
+}
+
+.df-progress-track {
+    height: 8px;
+    border-radius: 999px;
+    background-color: var(--border);
+    overflow: hidden;
+}
+
+.df-progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+}
+
+.df-class-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.df-page { align-items: stretch; padding: 54px 5vw 80px; background: transparent; }
+.df-heading, .fbc-heading { text-align: left; font-size: 34px; letter-spacing: -.03em; }
+.df-subheading, .fbc-subheading { text-align: left; }
+.df-form { max-width: none; grid-template-columns: 1.4fr 1fr; background: var(--bg-elevated); padding: 20px; border: 1px solid var(--border); border-radius: 10px; }
+.df-input { border-radius: 5px; background: var(--bg-input); }
+.df-route-summary { display: flex; gap: 22px; flex-wrap: wrap; padding: 12px 0; }
+.df-capacity-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: none; width: 100%; margin-top: 22px; }
+.df-capacity-field { padding: 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-elevated); }
+.df-capacity-field span { display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 12px; }
+.df-submit-btn { align-self: flex-start; border-radius: 5px; background: var(--rail-blue); color: var(--button-text); }
+@media (max-width: 600px) { .df-page { padding: 35px 20px 60px; } .df-capacity-row, .df-form { grid-template-columns: 1fr; } }

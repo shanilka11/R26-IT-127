@@ -1,0 +1,62 @@
+.sidenav {
+    position: fixed;
+    left: 0;
+    top: 61px;
+    bottom: 0;
+    width: 260px;
+    height: auto;
+    overflow-y: auto;
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
+    transition: var(--transition-theme);
+}
+
+.custom-sidebar-menu {
+    background-color: transparent !important;
+    border-right: none !important;
+    padding: 12px;
+}
+
+.custom-sidebar-menu .ant-menu-item {
+    color: var(--text-secondary) !important;
+    border-radius: 8px !important;
+    margin: 4px 0 !important;
+    height: 42px;
+    line-height: 42px;
+}
+
+.custom-sidebar-menu .ant-menu-item .anticon,
+.custom-sidebar-menu .ant-menu-item svg {
+    color: var(--text-secondary);
+    font-size: 16px;
+}
+
+.custom-sidebar-menu .ant-menu-item:hover {
+    background-color: var(--bg-hover) !important;
+    color: var(--text-primary) !important;
+}
+
+.custom-sidebar-menu .ant-menu-item:hover .anticon,
+.custom-sidebar-menu .ant-menu-item:hover svg {
+    color: var(--text-primary);
+}
+
+.custom-sidebar-menu .ant-menu-item:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: -2px; }
+
+.custom-sidebar-menu .ant-menu-item-selected {
+    background: var(--bg-hover) !important;
+    border-left: 3px solid var(--accent-primary);
+    color: var(--text-primary) !important;
+}
+
+.custom-sidebar-menu .ant-menu-item-selected .anticon,
+.custom-sidebar-menu .ant-menu-item-selected svg {
+    color: var(--text-primary);
+}
+
+.sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 24px 18px 20px; }
+.sidebar-brand img { width: 42px; height: 42px; max-width: 42px; object-fit: contain; border-radius: 8px; }
+.sidebar-brand strong { display: block; color: var(--text-primary); font-size: 15px; }
+.sidebar-brand small, .sidebar-label { color: var(--text-secondary); font-size: 10px; letter-spacing: .14em; }
+.sidebar-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 8px; background: var(--accent-primary); color: var(--button-text); font-size: 11px; font-weight: 700; }
+.sidebar-label { padding: 0 24px 8px; }
