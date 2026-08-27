@@ -12,10 +12,6 @@
 <h3 align="center">AI-Driven Intelligent Railway Operations System for Sri Lanka</h3>
 
 <p align="center">
-  <strong>Advanced Spatio-Temporal Demand Forecasting and Adaptive Seat Allocation using AI</strong>
-</p>
-
-<p align="center">
   An intelligent, data-driven railway decision-support platform designed to
   improve passenger demand forecasting, capacity management, seat utilization,
   and passenger fairness in Sri Lankan railway operations.
