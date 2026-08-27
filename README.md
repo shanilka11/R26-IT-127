@@ -388,36 +388,6 @@ The component follows a layered fraud-analysis architecture.
                  └───────────────────────────────┘
 ```
 
-## 🔗 Integration with Demand Forecasting & Adaptive Seat Allocation
-
-This component is integrated with the **Advanced Spatio-Temporal Demand Forecasting and Adaptive Seat Allocation using AI** component developed by **Senawirathna D.M.N.T (IT22151506)** within the same **R26-IT-127 AI-Driven Intelligent Railway Operations System**.
-
-The integration is designed around the shared railway platform:
-
-```text
-                  RAILWAY TICKETING / OPERATIONAL DATA
-                               │
-                ┌──────────────┴──────────────┐
-                ▼                             ▼
-     Demand Forecasting &              Ticket Fraud Detection &
-     Adaptive Seat Allocation          Risk-Aware Verification
-     (IT22151506)                      (IT22126610)
-                │                             │
-                ▼                             ▼
-     Demand / Seat Insights            Risk / Fraud Insights
-                │                             │
-                └──────────────┬──────────────┘
-                               ▼
-                    INTEGRATED RAILWAY PLATFORM
-                               │
-                               ▼
-                   Better Operational Decisions
-```
-
-The two components remain responsible for different research problems, while contributing complementary intelligence to the same railway operations platform.
-
----
-
 # 🎫 Railway Fraud Taxonomy
 
 A core part of the research is defining a railway-specific fraud taxonomy before model development.
