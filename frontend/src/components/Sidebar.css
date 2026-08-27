@@ -1,0 +1,88 @@
+:root {
+    --bg: #0B1120;
+    --bg-elevated: #111A2E;
+    --border: rgba(255, 255, 255, 0.08);
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --accent-blue: #3B82F6;
+    --accent-purple: #8B5CF6;
+    --accent-green: #22C55E;
+    --accent-amber: #F59E0B;
+    --accent-red: #EF4444;
+}
+
+.sidenav {
+    width: 260px;
+    min-height: 116.9vh;
+    background-color: var(--bg-elevated);
+    border-right: 1px solid var(--border);
+}
+
+.custom-sidebar-menu {
+    background-color: transparent !important;
+    border-right: none !important;
+    padding: 12px;
+}
+
+.custom-sidebar-menu .ant-menu-item {
+    color: var(--text-secondary) !important;
+    border-radius: 8px !important;
+    margin: 4px 0 !important;
+    height: 42px;
+    line-height: 42px;
+}
+
+.custom-sidebar-menu .ant-menu-item .anticon,
+.custom-sidebar-menu .ant-menu-item svg {
+    color: var(--text-secondary);
+    font-size: 16px;
+}
+
+.custom-sidebar-menu .ant-menu-item:hover {
+    background-color: rgba(59, 130, 246, 0.12) !important;
+    color: var(--text-primary) !important;
+}
+
+.custom-sidebar-menu .ant-menu-item:hover .anticon,
+.custom-sidebar-menu .ant-menu-item:hover svg {
+    color: var(--text-primary);
+}
+
+/* Active item: rounded gradient pill, matching the dashboard's blue/purple accent */
+.custom-sidebar-menu .ant-menu-item-selected {
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)) !important;
+    color: #fff !important;
+}
+
+.custom-sidebar-menu .ant-menu-item-selected .anticon,
+.custom-sidebar-menu .ant-menu-item-selected svg {
+    color: #fff;
+}
+
+/* Mobile hamburger toggle — hidden on desktop */
+.sidebar-toggle-btn {
+    display: none;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 1000;
+    background-color: var(--bg-elevated) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-primary) !important;
+}
+
+.sidebar-drawer .ant-drawer-content {
+    background-color: var(--bg-elevated);
+}
+
+@media (max-width: 768px) {
+    .sidenav {
+        display: none;
+    }
+
+    .sidebar-toggle-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

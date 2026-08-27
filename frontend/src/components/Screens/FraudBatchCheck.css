@@ -1,0 +1,209 @@
+:root {
+    --bg: #0B1120;
+    --bg-elevated: #111A2E;
+    --border: rgba(255, 255, 255, 0.08);
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --accent-blue: #3B82F6;
+    --accent-purple: #8B5CF6;
+    --accent-green: #22C55E;
+    --accent-amber: #F59E0B;
+    --accent-red: #EF4444;
+}
+
+.fbc-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--bg);
+    padding: 50px 24px;
+}
+
+.fbc-heading {
+    color: var(--text-primary);
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+.fbc-subheading {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+}
+
+.fbc-form {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
+    gap: 16px;
+    max-width: 900px;
+    width: 100%;
+}
+
+.fbc-input {
+    height: 50px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+    font-size: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.fbc-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.fbc-input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.fbc-submit-btn {
+    margin-top: 28px;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.fbc-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ---- Result modal ---- */
+.fbc-result-modal .ant-modal-content {
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+.fbc-result-modal .ant-modal-close {
+    color: var(--text-secondary);
+}
+
+.fbc-result-title {
+    color: var(--text-primary);
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.fbc-stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.fbc-stat-card {
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fbc-stat-card span {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.fbc-stat-card strong {
+    color: var(--text-primary);
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.fbc-stat-danger {
+    color: var(--accent-red) !important;
+}
+
+.fbc-breakdown {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 8px;
+}
+
+.fbc-breakdown-label {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+.fbc-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.fbc-chip {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    background-color: rgba(148, 163, 184, 0.15);
+    color: var(--text-primary);
+}
+
+.fbc-chip.tier-low-risk {
+    background-color: rgba(34, 197, 94, 0.15);
+    color: var(--accent-green);
+}
+
+.fbc-chip.tier-medium-risk {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: var(--accent-amber);
+}
+
+.fbc-chip.tier-high-risk,
+.fbc-chip.tier-flagged {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: var(--accent-red);
+}
+
+.fbc-table-wrap {
+    max-height: 260px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.fbc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.fbc-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-elevated);
+    color: var(--text-secondary);
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.fbc-table tbody td {
+    padding: 8px 12px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+}
+
+.fbc-row-flagged td:first-child {
+    border-left: 3px solid var(--accent-red);
+}

@@ -1,0 +1,69 @@
+:root {
+    --bg: #0B1120;
+    --bg-elevated: #111A2E;
+    --border: rgba(255, 255, 255, 0.08);
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --accent-blue: #3B82F6;
+    --accent-purple: #8B5CF6;
+}
+
+.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--bg);
+    padding: 24px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    background-color: var(--bg-elevated) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    padding: 12px;
+}
+
+.auth-logo {
+    width: 160px;
+    padding: 12px;
+}
+
+.auth-title {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 16px;
+    padding: 8px 0 20px;
+}
+
+.auth-card .ant-form-item-label > label {
+    color: var(--text-secondary) !important;
+}
+
+.auth-card .ant-input,
+.auth-card .ant-input-affix-wrapper {
+    background-color: var(--bg) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-primary) !important;
+}
+
+.auth-card .ant-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.auth-card .ant-input:focus,
+.auth-card .ant-input-affix-wrapper-focused {
+    border-color: var(--accent-blue) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25) !important;
+}
+
+.auth-submit-btn {
+    width: 100%;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)) !important;
+    border: none !important;
+    font-weight: 600;
+}

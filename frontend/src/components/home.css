@@ -1,0 +1,141 @@
+/* ---- Theme tokens (match nav.js / footer.js) ---- */
+:root {
+    --bg: #0B1120;
+    --bg-elevated: #111A2E;
+    --border: rgba(255, 255, 255, 0.08);
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --accent-blue: #3B82F6;
+    --accent-purple: #8B5CF6;
+}
+
+.web-view,
+.mobile-view {
+    background-color: var(--bg);
+    color: var(--text-primary);
+}
+
+/* ---- Hero ---- */
+.hero-section,
+.hero-section-mobile {
+    height: 500px;
+    color: var(--text-primary);
+    text-align: center;
+    padding: 150px 0;
+    position: relative;
+}
+
+.hero-section-mobile {
+    height: 300px;
+    padding: 100px 20px;
+}
+
+.hero-section::before,
+.hero-section-mobile::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(11, 17, 32, 0.4) 0%, rgba(11, 17, 32, 0.85) 100%);
+}
+
+.hero-section > .container,
+.hero-section-mobile > .container {
+    position: relative;
+    z-index: 1;
+}
+
+.h1-text-home,
+.h1-text-home-mobile {
+    color: var(--text-primary);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.p-text-home,
+.p-text-home-mobile {
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ---- Search bar ---- */
+.top-search-bar-container {
+    padding: 20px;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    margin: -60px auto 40px;
+    width: 80%;
+    position: relative;
+    z-index: 5;
+}
+
+.search-input {
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+}
+
+.search-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.search-input:focus {
+    background-color: var(--bg);
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.search-btn {
+    background-color: var(--accent-blue);
+    border: none;
+}
+
+.search-btn:hover {
+    background-color: var(--accent-purple);
+}
+
+/* ---- Section heading ---- */
+.section-heading {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+/* ---- Service cards ---- */
+.service-card {
+    margin: 10px 0;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    color: var(--text-primary);
+    overflow: hidden;
+}
+
+.service-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-blue);
+}
+
+.service-card .card-title {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.service-card .card-text {
+    color: var(--text-secondary);
+}
+
+.learn-more-btn {
+    background-color: var(--accent-blue);
+    border: none;
+    color: #fff;
+}
+
+.learn-more-btn:hover {
+    background-color: var(--accent-purple);
+}

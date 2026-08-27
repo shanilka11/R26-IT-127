@@ -1,0 +1,201 @@
+:root {
+    --bg: #0B1120;
+    --bg-elevated: #111A2E;
+    --border: rgba(255, 255, 255, 0.08);
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --accent-blue: #3B82F6;
+    --accent-purple: #8B5CF6;
+}
+
+.df-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--bg);
+    padding: 50px 24px;
+}
+
+.df-heading {
+    color: var(--text-primary);
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+.df-subheading {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+}
+
+.df-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+    gap: 16px;
+    max-width: 760px;
+    width: 100%;
+}
+
+.df-input {
+    height: 50px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+    font-size: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.df-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.df-input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.df-checkbox-row {
+    display: flex;
+    gap: 24px;
+    max-width: 760px;
+    width: 100%;
+    margin-top: 16px;
+}
+
+.df-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.df-hint {
+    color: var(--text-secondary);
+    font-size: 12px;
+    max-width: 760px;
+    margin-top: 12px;
+}
+
+.df-submit-btn {
+    margin-top: 20px;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.df-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ---- Result modal ---- */
+.df-result-modal .ant-modal-content {
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+.df-result-modal .ant-modal-close {
+    color: var(--text-secondary);
+}
+
+.df-result-title {
+    color: var(--text-primary);
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.df-total-card {
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.df-total-card span {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.df-route-summary span {
+    color: #fff;
+}
+
+.df-capacity-row span {
+    color: #fff;
+}
+
+.df-total-card strong {
+    color: var(--text-primary);
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.df-class-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.df-class-card {
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+
+.df-class-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.df-class-header span {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.df-class-header strong {
+    color: var(--accent-blue);
+    font-size: 14px;
+}
+
+.df-progress-track {
+    height: 8px;
+    border-radius: 999px;
+    background-color: var(--border);
+    overflow: hidden;
+}
+
+.df-progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+}
+
+.df-class-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    color: var(--text-secondary);
+    font-size: 12px;
+}

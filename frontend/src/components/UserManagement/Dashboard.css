@@ -1,0 +1,209 @@
+:root {
+    --bg: #0B1120;
+    --bg-elevated: #111A2E;
+    --border: rgba(255, 255, 255, 0.08);
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --accent-blue: #3B82F6;
+    --accent-purple: #8B5CF6;
+    --accent-red: #EF4444;
+}
+
+.sa-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--bg);
+    padding: 50px 24px;
+}
+
+.sa-heading {
+    color: var(--text-primary);
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+.sa-subheading {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+}
+
+.sa-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+    gap: 16px;
+    max-width: 760px;
+    width: 100%;
+}
+
+.sa-input {
+    height: 50px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+    font-size: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sa-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.sa-input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.sa-checkbox-row {
+    display: flex;
+    gap: 24px;
+    max-width: 760px;
+    width: 100%;
+    margin-top: 16px;
+}
+
+.sa-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.sa-hint {
+    color: var(--text-secondary);
+    font-size: 12px;
+    max-width: 760px;
+    margin-top: 12px;
+}
+
+.sa-submit-btn {
+    margin-top: 20px;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.sa-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ---- Result modal ---- */
+.sa-result-modal .ant-modal-content {
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+.sa-result-modal .ant-modal-close {
+    color: var(--text-secondary);
+}
+
+.sa-result-title {
+    color: var(--text-primary);
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.sa-stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.sa-stat-card {
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sa-stat-card span {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.sa-stat-card strong {
+    color: var(--text-primary);
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.sa-stat-danger {
+    color: var(--accent-red) !important;
+}
+
+.sa-class-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.sa-class-card {
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+
+.sa-class-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.sa-class-header span {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.sa-class-header strong {
+    color: var(--accent-blue);
+    font-size: 14px;
+}
+
+.sa-progress-track {
+    height: 8px;
+    border-radius: 999px;
+    background-color: var(--border);
+    overflow: hidden;
+}
+
+.sa-progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+}
+
+.sa-class-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.sa-unmet {
+    color: var(--accent-red) !important;
+    font-weight: 600;
+}
