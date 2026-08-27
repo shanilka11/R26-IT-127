@@ -1572,9 +1572,4 @@ This README is based on the submitted **Project Proposal Report**:
 > *Advanced Intelligent Ticket Fraud Detection and Risk-Aware Passenger Verification*  
 > **R26-IT-127 — IT22126610 — Muthukudaarachchi V.U**
 
-Integrated research component reference:
-
-> *Advanced Spatio-Temporal Demand Forecasting and Adaptive Seat Allocation using AI*  
-> **R26-IT-127 — IT22151506 — Senawirathna D.M.N.T**
-
 ---
