@@ -388,6 +388,8 @@ The component follows a layered fraud-analysis architecture.
                  └───────────────────────────────┘
 ```
 
+---
+
 # 🎫 Railway Fraud Taxonomy
 
 A core part of the research is defining a railway-specific fraud taxonomy before model development.
