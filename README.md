@@ -34,7 +34,6 @@
 | 👨‍💻 **Researcher** | Muthukudaarachchi V.U |
 | 🪪 **Student ID** | IT22126610 |
 | 🧠 **Component** | Advanced Intelligent Ticket Fraud Detection and Risk-Aware Passenger Verification |
-| 🔗 **Integrated With** | Advanced Spatio-Temporal Demand Forecasting and Adaptive Seat Allocation using AI — Senawirathna D.M.N.T (IT22151506) |
 | 🏫 **University** | Sri Lanka Institute of Information Technology (SLIIT) |
 | 👩‍🏫 **Supervisor** | Ms. Chathurangika Kahadawaarachchi |
 | 🎯 **Domain** | AI, Machine Learning & Railway Fraud Analytics |
