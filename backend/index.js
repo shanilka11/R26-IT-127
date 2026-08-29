@@ -5,6 +5,7 @@ const cors = require('cors')
 
 var userRoutes = require('./routes/user')
 var fileRoutes = require('./routes/file')
+var trainRoutes = require('./routes/train')
 
 var app = express()
 app.use(bodyParser.json())
@@ -28,3 +29,4 @@ app.get('/', (req, res) => {
 
 app.use('/user',userRoutes)
 app.use('/file',fileRoutes)
+app.use('/train',trainRoutes)

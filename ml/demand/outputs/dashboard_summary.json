@@ -1,0 +1,27 @@
+{
+  "total_forecasted_demand": 1997162,
+  "total_allocated_seats": 2383437,
+  "overall_seat_utilization_pct": 83.79,
+  "period_covered": "2024-01-01 00:00:00 to 2024-12-31 00:00:00",
+  "model_used_for_demand": "RandomForest",
+  "class_wise": {
+    "1st Class": {
+      "total_base_capacity": 118536,
+      "total_allocated_seats": 130412,
+      "total_predicted_demand": 99307,
+      "avg_utilization_pct": 78.32
+    },
+    "2nd Class": {
+      "total_base_capacity": 715455,
+      "total_allocated_seats": 805289,
+      "total_predicted_demand": 601984,
+      "avg_utilization_pct": 76.52
+    },
+    "3rd Class": {
+      "total_base_capacity": 1549446,
+      "total_allocated_seats": 1447736,
+      "total_predicted_demand": 1295871,
+      "avg_utilization_pct": 89.63
+    }
+  }
+}

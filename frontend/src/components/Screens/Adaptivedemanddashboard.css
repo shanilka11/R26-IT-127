@@ -253,3 +253,8 @@
 .add-card { border-radius: 10px; background: var(--rail-panel); border-color: var(--rail-line); }
 .add-controls { box-shadow: none; }
 .add-run-btn { border-radius: 5px; background: var(--accent-primary); color: var(--bg-header); }
+.add-state { color: var(--text-secondary); padding: 32px 0; }
+.add-error { color: var(--danger, #ef6b73); }
+.add-table-wrap { overflow-x: auto; }
+.add-chart-card { grid-column: 1 / -1; }
+.add-allocation-stats { margin: 28px 0; }
