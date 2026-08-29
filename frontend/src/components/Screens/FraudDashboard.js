@@ -27,7 +27,6 @@ const TABS = [
   { key: 'fraud', label: 'Fraud Detection' },
   { key: 'anomaly', label: 'Anomaly Detection' },
   { key: 'risk', label: 'Risk Analysis' },
-  { key: 'verification', label: 'Passenger Verification' },
   { key: 'workload', label: 'Inspection Workload' },
   { key: 'predict', label: 'Future Prediction' },
 ];
@@ -209,20 +208,6 @@ const FraudDetectionTab = () => {
   );
 };
 
-const ModelBlock = ({ title, block }) => (
-  <div className="fd-card">
-    <h3>{title}</h3>
-    {block ? (
-      <div className="fd-kpi-grid fd-kpi-grid-compact">
-        <KpiCard label="Flagged (score ≥ 0.5)" value={block.flagged_count} />
-        <KpiCard label="Mean Score" value={block.mean_score} />
-      </div>
-    ) : (
-      <p className="fd-muted">Not available yet — see notebook_patch_instructions.md</p>
-    )}
-  </div>
-);
-
 const AnomalyDetectionTab = () => {
   const { data, loading, error } = useApiGet('/anomaly-detection/overview');
   if (loading) return <LoadingBlock />;
@@ -230,33 +215,6 @@ const AnomalyDetectionTab = () => {
 
   return (
     <div className="fd-section-grid">
-      <ModelBlock title="Isolation Forest Results" block={data.isolation_forest_results} />
-      <ModelBlock title="One-Class SVM Results" block={data.one_class_svm_results} />
-      <ModelBlock title="Autoencoder Results" block={data.autoencoder_results} />
-
-      <div className="fd-card fd-card-wide">
-        <h3>Model Performance Comparison</h3>
-        {data.model_performance_comparison ? (
-          <div className="fd-table-wrap">
-            <table className="fd-table">
-              <thead>
-                <tr><th>Model</th><th>Precision</th><th>Recall</th><th>F1-score</th><th>ROC-AUC</th></tr>
-              </thead>
-              <tbody>
-                {data.model_performance_comparison.map((m) => (
-                  <tr key={m.Model}>
-                    <td>{m.Model}</td><td>{m.Precision}</td><td>{m.Recall}</td>
-                    <td>{m['F1-score']}</td><td>{m['ROC-AUC']}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="fd-muted">Not available yet — see notebook_patch_instructions.md</p>
-        )}
-      </div>
-
       <div className="fd-card fd-card-wide">
         <h3>Anomaly Score Distribution (ensemble risk score)</h3>
         <BarList
@@ -317,80 +275,6 @@ const RiskAnalysisTab = () => {
           colorFn={() => 'var(--accent-red)'}
         />
       </div>
-    </div>
-  );
-};
-
-const PassengerVerificationTab = () => {
-  const [riskTier, setRiskTier] = useState('');
-  const [search, setSearch] = useState('');
-  const [page, setPage] = useState(1);
-  const pageSize = 15;
-
-  const { data, loading, error, reload } = useApiGet(
-    `/passenger-verification/list?risk_tier=${riskTier}&search=${encodeURIComponent(search)}&page=${page}&page_size=${pageSize}`,
-    [riskTier, search, page]
-  );
-
-  const totalPages = data ? Math.max(1, Math.ceil(data.total / pageSize)) : 1;
-
-  return (
-    <div className="fd-card fd-card-wide">
-      <div className="fd-verification-controls">
-        <select
-          className="fbc-input"
-          value={riskTier}
-          onChange={(e) => { setRiskTier(e.target.value); setPage(1); }}
-        >
-          <option value="">All Risk Tiers</option>
-          <option value="High">High</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
-        </select>
-        <input
-          className="fbc-input"
-          placeholder="Search passenger / transaction..."
-          value={search}
-          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-        />
-        <button className="fbc-submit-btn fd-btn-compact" onClick={reload}>Refresh</button>
-      </div>
-
-      {loading ? <LoadingBlock /> : error ? <ErrorBlock msg={error} /> : (
-        <>
-          <div className="fd-table-wrap">
-            <table className="fd-table">
-              <thead>
-                <tr>
-                  <th>Transaction</th><th>Passenger</th><th>Date</th><th>Route</th>
-                  <th>Risk Score</th><th>Risk Tier</th><th>Fraud Type</th>
-                  <th>Reason for Flagging</th><th>Verification Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.passengers.map((p) => (
-                  <tr key={p.transaction_id} className="fd-row-flagged">
-                    <td>{p.transaction_id}</td>
-                    <td>{p.passenger_name} ({p.passenger_id})</td>
-                    <td>{p.date}</td>
-                    <td>{p.route}</td>
-                    <td>{p.risk_score}</td>
-                    <td><span className={`fbc-chip ${tierClass(p.risk_category)}`}>{p.risk_category}</span></td>
-                    <td>{p.suspected_fraud_type}</td>
-                    <td className="fd-reason-cell">{p.reason_for_flagging}</td>
-                    <td>{p.verification_status}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="fd-pagination">
-            <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Prev</button>
-            <span>Page {page} of {totalPages} ({data.total} results)</span>
-            <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>Next</button>
-          </div>
-        </>
-      )}
     </div>
   );
 };
@@ -580,7 +464,6 @@ const FraudDashboard = () => {
       case 'fraud': return <FraudDetectionTab />;
       case 'anomaly': return <AnomalyDetectionTab />;
       case 'risk': return <RiskAnalysisTab />;
-      case 'verification': return <PassengerVerificationTab />;
       case 'workload': return <InspectionWorkloadTab />;
       case 'predict': return <FuturePredictionTab />;
       default: return null;
@@ -589,8 +472,8 @@ const FraudDashboard = () => {
 
   return (
     <div className="fbc-page">
-      <h1 className="fbc-heading">Intelligent Fraud Detection</h1>
-      <p className="fbc-subheading">Risk intelligence for suspicious activity, passenger verification, and inspection decisions.</p>
+      <h1 className="fbc-heading">Ticket Fraud Detection Dashboard</h1>
+      <p className="fbc-subheading">Sri Lanka Railways — Intelligent Risk-Aware Passenger Verification</p>
 
       <div className="fd-tabs">
         {TABS.map((t) => (

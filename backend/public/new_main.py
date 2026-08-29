@@ -162,6 +162,55 @@ def predict_demand_for_route(body: dict):
     return predicted_demand, capacities
 
 
+def adaptive_seat_allocation(predicted_demand, total_capacity, min_class_capacity=None,
+                             max_class_capacity=None, fairness_floor_pct=0.05):
+    classes = list(predicted_demand.keys())
+    min_class_capacity = min_class_capacity or {}
+    max_class_capacity = max_class_capacity or {}
+    fairness_floor = {
+        cls: max(min_class_capacity.get(cls, 0), int(total_capacity * fairness_floor_pct))
+        for cls in classes
+    }
+    floor_sum = sum(fairness_floor.values())
+    if floor_sum > total_capacity and floor_sum > 0:
+        scale = total_capacity / floor_sum
+        fairness_floor = {cls: int(value * scale) for cls, value in fairness_floor.items()}
+        floor_sum = sum(fairness_floor.values())
+
+    allocation = dict(fairness_floor)
+    remaining = total_capacity - floor_sum
+    extra_needed = {
+        cls: max(0, predicted_demand[cls] - fairness_floor[cls]) for cls in classes
+    }
+    total_extra_needed = sum(extra_needed.values())
+    if total_extra_needed > 0 and remaining > 0:
+        for cls in classes:
+            share = extra_needed[cls] / total_extra_needed
+            maximum = max_class_capacity.get(cls, total_capacity)
+            allocation[cls] = min(allocation[cls] + int(remaining * share), maximum)
+
+    leftover = total_capacity - sum(allocation.values())
+    for cls in sorted(classes, key=lambda item: predicted_demand[item] - allocation[item], reverse=True):
+        if leftover <= 0:
+            break
+        maximum = max_class_capacity.get(cls, total_capacity)
+        can_add = max(0, min(leftover, maximum - allocation[cls]))
+        allocation[cls] += can_add
+        leftover -= can_add
+
+    return {
+        cls: {
+            "allocated_seats": allocation[cls],
+            "predicted_demand": predicted_demand[cls],
+            "expected_utilization_pct": round(
+                100 * min(predicted_demand[cls], allocation[cls]) / allocation[cls], 2
+            ) if allocation[cls] > 0 else 0,
+            "unmet_demand": max(0, predicted_demand[cls] - allocation[cls]),
+        }
+        for cls in classes
+    }
+
+
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', '*')
@@ -230,6 +279,42 @@ def predict_demand():
 def health():
     return jsonify({"status": "ok", "model_loaded": model is not None,
                      "historical_records": len(history_df)})
+
+
+@app.route('/seat_allocation', methods=['POST'])
+def seat_allocation():
+    try:
+        body = request.get_json()
+        if body is None:
+            raise InvalidRequestError("Request body must be JSON.")
+        required = ["date", "origin_station", "destination_station", "line_name", "train_type", "distance_km"]
+        missing = [field for field in required if field not in body]
+        if missing:
+            raise InvalidRequestError(f"Missing required field(s): {missing}")
+
+        predicted_demand, capacities = predict_demand_for_route(body)
+        total_capacity = int(body.get("total_capacity", sum(capacities.values())))
+        allocation = adaptive_seat_allocation(
+            predicted_demand,
+            total_capacity,
+            body.get("min_class_capacity"),
+            body.get("class_capacity", capacities),
+            float(body.get("fairness_floor_pct", 0.05)),
+        )
+        return jsonify({
+            "success": True,
+            "route": f"{body['origin_station']} - {body['destination_station']}",
+            "date": body["date"],
+            "train_type": body["train_type"],
+            "total_capacity": total_capacity,
+            "allocation_by_class": allocation,
+            "total_allocated_seats": sum(item["allocated_seats"] for item in allocation.values()),
+            "total_unmet_demand": sum(item["unmet_demand"] for item in allocation.values()),
+        })
+    except InvalidRequestError as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
 
 
 @app.route('/train_services', methods=['GET'])

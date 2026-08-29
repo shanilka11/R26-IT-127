@@ -4,6 +4,8 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import TrainData from "./components/Screens/TrainData";
+import SeatAllocationDashboard from "./components/Screens/SeatAllocationDashboard";
 import Adaptivedemanddashboard from "./components/Screens/Adaptivedemanddashboard";
 import FraudDashboard from "./components/Screens/FraudDashboard";
 import FraudBatchCheck from "./components/Screens/FraudBatchCheck";
@@ -29,9 +31,11 @@ class App extends Component {
             <div className="contents">
               <Switch>
                 <Route path="/settings" render={() => <Settings />} />
-                <Route path="/FraudDashboard" render={() => <FraudDashboard />} />
+                <Route path="/TrainData" render={() => <TrainData />} />
+                <Route path="/SeatAllocationDashboard" render={() => <SeatAllocationDashboard />} />
                 <Route path="/Adaptivedemanddashboard" render={() => <Adaptivedemanddashboard />} />
                 <Route path="/FraudBatchCheck" render={() => <FraudBatchCheck />} />
+                <Route path="/FraudDashboard" render={() => <FraudDashboard />} />
                 <Route path="/DemandForecast" render={() => <DemandForecast />} />
                 <Route path="/dashboard" render={() => <Dashboard />} />
                 <Route path="/AllUsers" render={() => <AllUsers />} />

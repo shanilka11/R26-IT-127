@@ -1,0 +1,4 @@
+class,total_base_capacity,total_allocated_seats,total_predicted_demand,avg_utilization_pct
+1st Class,118536,130412,99307,78.32
+2nd Class,715455,805289,601984,76.52
+3rd Class,1549446,1447736,1295871,89.63

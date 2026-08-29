@@ -1,7 +1,3 @@
-/* Reuses the same design tokens as FraudBatchCheck.css.
-   If FraudBatchCheck.css is already imported globally in your app,
-   you can delete the :root block below to avoid duplication. */
-/* ---- Base page + form + result styles (shared with FraudBatchCheck) ---- */
 .fbc-page {
     display: flex;
     flex-direction: column;
@@ -49,7 +45,7 @@
 .fbc-input:focus {
     outline: none;
     border-color: var(--accent-blue);
-    box-shadow: var(--focus-ring);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
 }
 
 .fbc-submit-btn {
@@ -225,10 +221,6 @@
 .fd-kpi-amber { color: var(--accent-amber) !important; }
 .fd-kpi-red { color: var(--accent-red) !important; }
 .fd-kpi-green { color: var(--accent-green) !important; }
-
-.fd-page { background: transparent; }
-.fd-card, .fd-kpi-card { border-radius: 10px; background: var(--rail-panel); border-color: var(--rail-line); }
-.fd-tab-active { background: var(--rail-blue); color: var(--button-text); }
 
 /* Bar list chart */
 .fd-barlist { display: flex; flex-direction: column; gap: 10px; }
