@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 27, 2026 at 01:23 AM
+-- Generation Time: Aug 29, 2026 at 08:02 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -44,7 +44,9 @@ CREATE TABLE `train` (
 
 INSERT INTO `train` (`id`, `origin`, `destination`, `train_type`, `date`, `1c`, `2c`, `3c`) VALUES
 (1, 'Colombo Fort', 'Anuradhapura', 'Intercity', '2026-08-28', 50, 150, 250),
-(2, 'Colombo Fort', 'Anuradhapura', 'Express', '2026-08-28', 100, 250, 350);
+(2, 'Colombo Fort', 'Anuradhapura', 'Express', '2026-08-28', 100, 250, 350),
+(5, 'Colombo Fort', 'Anuradhapura', 'Night Mail', '2026-08-20', 20, 150, 200),
+(6, 'Colombo Fort', 'Anuradhapura', 'Express', '2026-08-05', 30, 120, 200);
 
 -- --------------------------------------------------------
 
@@ -67,7 +69,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `fname`, `lname`, `phone`, `email`, `password`, `active`) VALUES
-(1, 'Kalana', 'Udara', '0711122555', 'kk@gmail.com', 'U2FsdGVkX18ORV4KDqDSbFy0kub91G3ngij2cFAGgFU=', 1);
+(2, 'Nimasha', 'Thathsarani', '0702697433', 'nimashathathsarani9@gmail.com', 'U2FsdGVkX19XOeo9Qu3b/fxAwaqoN2U1CQQgSUKtQZU=', 1);
 
 --
 -- Indexes for dumped tables
@@ -93,13 +95,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `train`
 --
 ALTER TABLE `train`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
