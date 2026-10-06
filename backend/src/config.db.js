@@ -1,6 +1,3 @@
-import mongoose from "mongoose";
+import { initDatabase } from "./config/database.js";
 
-export const connectDb = async (uri) => {
-  await mongoose.connect(uri);
-  console.log("MongoDB connected");
-};
+export const connectDb = initDatabase;
