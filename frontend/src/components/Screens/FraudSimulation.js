@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal } from 'antd';
+import Select from 'react-select';
+import { MdCalendarToday } from 'react-icons/md';
 import axios from 'axios';
 import { verificationAPI, demoActor, requestUUID, apiError, colomboTime, simulationMode } from './verificationApi';
 import './FraudBatchCheck.css';
@@ -8,6 +10,30 @@ const tierClass = (tier) => `tier-${tier.toLowerCase().replace(/\s+/g, '-')}`;
 const localToday = () => {
   const date = new Date();
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+};
+const recordedDateFormat = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC',
+});
+const dateSelectStyles = {
+  control: (base, state) => ({ ...base, minHeight: 50, borderRadius: 5,
+    backgroundColor: 'var(--bg-input)', borderColor: state.isFocused ? 'var(--accent-blue)' : 'var(--border)',
+    boxShadow: state.isFocused ? 'var(--focus-ring)' : 'none', fontSize: 15,
+    opacity: state.isDisabled ? 0.6 : 1, '&:hover': { borderColor: 'var(--accent-blue)' } }),
+  valueContainer: (base) => ({ ...base, padding: '0 10px 0 38px' }),
+  input: (base) => ({ ...base, color: 'var(--text-primary)', margin: 0, padding: 0 }),
+  singleValue: (base) => ({ ...base, color: 'var(--text-primary)' }),
+  placeholder: (base) => ({ ...base, color: 'var(--text-secondary)' }),
+  indicatorSeparator: () => ({ display: 'none' }),
+  dropdownIndicator: (base) => ({ ...base, color: 'var(--text-secondary)', '&:hover': { color: 'var(--accent-blue)' } }),
+  clearIndicator: (base) => ({ ...base, color: 'var(--text-secondary)', '&:hover': { color: 'var(--accent-red)' } }),
+  menu: (base) => ({ ...base, backgroundColor: 'var(--bg-elevated)', border: '1px solid var(--border)',
+    borderRadius: 8, overflow: 'hidden', boxShadow: '0 12px 28px rgba(7, 20, 38, 0.2)' }),
+  menuPortal: (base) => ({ ...base, zIndex: 1100 }),
+  option: (base, state) => ({ ...base, fontSize: 14, padding: '10px 14px', cursor: 'pointer',
+    color: state.isSelected ? 'var(--button-text)' : 'var(--text-primary)',
+    backgroundColor: state.isSelected ? 'var(--rail-blue)' : state.isFocused ? 'var(--bg-input-soft)' : 'var(--bg-elevated)',
+    ':active': { backgroundColor: 'var(--bg-input-soft)', color: 'var(--text-primary)' } }),
+  noOptionsMessage: (base) => ({ ...base, color: 'var(--text-secondary)', fontSize: 13 }),
 };
 
 export default function FraudSimulation() {
@@ -35,6 +61,9 @@ export default function FraudSimulation() {
   const controller = useRef(null);
   const resultTitle = useRef(null);
   useEffect(() => () => controller.current?.abort(), []);
+  const recordedDates = (options?.historical_dates[trainRoute] || []).map(value => ({
+    value, label: recordedDateFormat.format(new Date(`${value}T00:00:00Z`)),
+  }));
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -88,11 +117,20 @@ export default function FraudSimulation() {
               {(options?.routes || []).map((route) => <option key={route} value={route}>{route}</option>)}
             </select>
           </label>
-          <label>Simulation date
-            {mode === 'historical_replay' ? <select className="fbc-input" value={date} onChange={event => setDate(event.target.value)} disabled={loading || !options}>
-              <option value="">Select recorded date</option>{(options?.historical_dates[trainRoute] || []).map(value => <option key={value}>{value}</option>)}
-            </select> : <input className="fbc-input" type="date" min={options?.today || localToday()} value={date} onChange={(event) => setDate(event.target.value)} disabled={loading} />}
-          </label>
+          <div className="fbc-date-field">
+            <label htmlFor="fbc-simulation-date">Simulation date</label>
+            {mode === 'historical_replay' ? <div className="fbc-date-select-wrap">
+              <MdCalendarToday className="fbc-date-icon" aria-hidden="true" />
+              <Select inputId="fbc-simulation-date" instanceId="fbc-recorded-date" classNamePrefix="fbc-recorded-date"
+                options={recordedDates} value={recordedDates.find(item => item.value === date) || null}
+                onChange={item => setDate(item?.value || '')}
+                placeholder={!options ? (optionsError ? 'Dates unavailable' : 'Loading recorded dates…') : !trainRoute ? 'Select a route first' : !recordedDates.length ? 'No recorded dates for this route' : 'Select or search a date'}
+                isDisabled={loading || !options || !trainRoute || !recordedDates.length}
+                isSearchable isClearable maxMenuHeight={240} menuPlacement="auto" menuPosition="fixed"
+                menuPortalTarget={document.body} styles={dateSelectStyles}
+                noOptionsMessage={() => 'No recorded dates match your search.'} />
+            </div> : <input id="fbc-simulation-date" className="fbc-input" type="date" min={options?.today || localToday()} value={date} onChange={(event) => setDate(event.target.value)} disabled={loading} />}
+          </div>
           <label>Number of passengers
             <input className="fbc-input" type="number" min="1" max="2000" step="1" value={nPassengers} onChange={(event) => setNPassengers(event.target.value)} disabled={loading} />
           </label>

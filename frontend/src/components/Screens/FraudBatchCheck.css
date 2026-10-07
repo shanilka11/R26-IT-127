@@ -205,6 +205,9 @@
 .fraud-simulation { color: var(--text-primary); }
 .fraud-simulation .fbc-form { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .fraud-simulation label { display: flex; flex-direction: column; gap: 8px; color: var(--text-secondary); }
+.fraud-simulation .fbc-date-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.fbc-date-select-wrap { position: relative; min-width: 0; }
+.fbc-date-icon { position: absolute; top: 25px; left: 14px; transform: translateY(-50%); z-index: 1; font-size: 18px; color: var(--text-secondary); pointer-events: none; }
 .fraud-form-error { margin-top: 16px; color: var(--accent-red); }
 .fbc-result-modal .ant-modal-header, .fbc-result-modal .ant-modal-title { background: var(--bg-elevated); color: var(--text-primary); }
 .fbc-submit-btn:focus-visible, .fbc-table-wrap:focus-visible { outline: 3px solid var(--accent-blue); outline-offset: 3px; }

@@ -113,7 +113,7 @@ test('future mode rejects past date', async () => {
 test('historical shortcut saves through Node, blocks duplicates and shows saved badge', async () => {
   window.history.replaceState({}, '', '/FraudDashboard?mode=historical_replay&route=Colombo+Fort+-+Kandy&date=2024-05-10&transaction_id=TXN100004');
   let resolveRequest; axios.post.mockImplementation(() => new Promise(resolve => { resolveRequest = resolve; }));
-  render(<FraudSimulation />); await screen.findByRole('option', { name: '2024-05-10' });
+  render(<FraudSimulation />); await screen.findByText('10 May 2024');
   const form = screen.getByRole('button', { name: 'Run Simulation' }).closest('form');
   fireEvent.submit(form); fireEvent.submit(form);
   expect(axios.post).toHaveBeenCalledTimes(1);

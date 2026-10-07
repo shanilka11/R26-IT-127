@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart,
@@ -14,7 +14,10 @@ const FRAUD_LABELS = { 'Abnormal Concession Usage': 'Concession', 'Suspicious Re
 const percent = (value) => value == null ? 'N/A' : `${value.toFixed(2)}%`;
 const tooltipStyle = { backgroundColor: 'var(--chart-tooltip-bg)', borderColor: 'var(--chart-tooltip-border)', borderRadius: 10, color: 'var(--text-primary)' };
 
-function ChartCard({ title, description, children, values, footer }) {
+function ChartCard({ title, description, children, values, footer, showDataList = true }) {
+  const dataList = <ul className={showDataList ? undefined : 'fd-overview-sr-only'} aria-label={`${title} values`}>
+    {values.map(({ name, count }) => <li key={name}><span>{name}</span><strong>{count.toLocaleString()}</strong></li>)}
+  </ul>;
   return (
     <section className="fd-overview-card">
       <h2>{title}</h2>
@@ -22,24 +25,21 @@ function ChartCard({ title, description, children, values, footer }) {
       {values.length ? <>
         <div className="fd-overview-chart" aria-hidden="true">{children}</div>
         {footer}
-        <details className="fd-overview-chart-values">
+        {showDataList ? <details className="fd-overview-chart-values">
           <summary>View {title.toLowerCase()} data</summary>
-          <ul>{values.map(({ name, count }) => <li key={name}><span>{name}</span><strong>{count.toLocaleString()}</strong></li>)}</ul>
-        </details>
+          {dataList}
+        </details> : dataList}
       </> : <p className="fd-overview-empty">No matching data for this chart.</p>}
     </section>
   );
 }
 
 export default function FraudDetectionOverview() {
-  const [draft, setDraft] = useState({ start_date: '', end_date: '', search: '' });
-  const [query, setQuery] = useState({});
-  const [range, setRange] = useState(null);
+  const [search, setSearch] = useState('');
+  const [query, setQuery] = useState({ search: '' });
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [validation, setValidation] = useState('');
-  const initialized = useRef(false);
 
   useEffect(() => {
     let active = true;
@@ -50,11 +50,6 @@ export default function FraudDetectionOverview() {
     axios.get(API, { params: query, signal: controller.signal }).then(({ data: result }) => {
       if (!active) return;
       if (!result.success) throw new Error(result.error || 'Unable to load the dashboard.');
-      setRange(result.available_date_range);
-      if (!initialized.current) {
-        initialized.current = true;
-        setDraft({ ...result.available_date_range, search: '' });
-      }
       setData(result);
     }).catch((failure) => {
       if (active) setError(failure.response?.data?.error || 'Dashboard service unavailable. Please try again.');
@@ -65,7 +60,6 @@ export default function FraudDetectionOverview() {
   }, [query]);
 
   const load = (filters) => {
-    setValidation('');
     setError('');
     setData(null);
     setLoading(true);
@@ -73,43 +67,21 @@ export default function FraudDetectionOverview() {
   };
   const apply = (event) => {
     event.preventDefault();
-    if (!draft.start_date || !draft.end_date) {
-      setValidation('Choose both a start date and an end date.');
-    } else if (draft.start_date > draft.end_date) {
-      setValidation('Start date must be on or before end date.');
-    } else {
-      load({ ...draft, search: draft.search.trim() });
-    }
-  };
-  const reset = () => {
-    const filters = { ...range, search: '' };
-    setDraft(filters);
-    load(filters);
-  };
-  const update = (event) => {
-    setDraft({ ...draft, [event.target.name]: event.target.value });
-    setValidation('');
+    load({ search: search.trim() });
   };
 
   const summary = data?.summary;
   const performance = data?.model_performance;
-  const filtersChanged = data && !loading && Object.keys(draft).some((key) =>
-    draft[key].trim() !== (data.applied_filters[key] || ''));
   const trend = data?.fraud_detection_trend.map((month) => ({ name: month.month, count: month.total_transactions })) || [];
   const types = Object.entries(data?.fraud_type_distribution || {}).map(([name, count]) => ({ name, count }));
   const categories = Object.entries(data?.ticket_category_distribution || {}).map(([name, count]) => ({ name, count }));
 
   return (
     <div className="fd-overview">
-      <form className="fd-overview-filters" onSubmit={apply} aria-label="Dashboard filters">
-        <label>Start date<input type="date" name="start_date" value={draft.start_date || ''} onChange={update} required /></label>
-        <label>End date<input type="date" name="end_date" value={draft.end_date || ''} onChange={update} required /></label>
-        <label className="fd-overview-search">Search transactions<input type="search" name="search" value={draft.search} onChange={update} placeholder="Transaction, passenger, or route" /></label>
-        <button className="fd-overview-apply" type="submit" disabled={!range}>Apply filters</button>
-        <button type="button" onClick={reset} disabled={!range}>Reset</button>
+      <form className="fd-overview-filters" onSubmit={apply} aria-label="Dashboard search">
+        <label className="fd-overview-search">Search transactions<input type="search" name="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Transaction, passenger, or route" /></label>
+        <button className="fd-overview-apply" type="submit">Apply</button>
       </form>
-      {filtersChanged && <p className="fd-overview-note" role="status">Filters changed — select Apply filters.</p>}
-      {validation && <p className="fd-overview-error" role="alert">{validation}</p>}
       <div aria-busy={loading}>
         {loading && <p className="fd-overview-status" role="status">Loading dashboard…</p>}
         {error && <div className="fd-overview-error" role="alert"><p>{error}</p><button type="button" onClick={() => load(query)}>Retry</button></div>}
@@ -123,9 +95,9 @@ export default function FraudDetectionOverview() {
               <h2>{label}</h2><strong>{value}</strong><span className="fd-overview-sr-only">{description}</span>
             </section>)}
           </div>
-          {!summary.total_ticket_transactions && <p className="fd-overview-empty" role="status">No assessed transactions match these filters. Adjust your dates or search, or select Reset.</p>}
+          {!summary.total_ticket_transactions && <p className="fd-overview-empty" role="status">No assessed transactions match this search. Try another transaction, passenger, or route, or clear the search and select Apply.</p>}
           <div className="fd-overview-charts">
-            <ChartCard title="Ticket Transactions Over Time" description="Monthly counts of matching assessed transactions" values={trend}>
+            <ChartCard title="Ticket Transactions Over Time" description="Monthly counts of matching assessed transactions" values={trend} showDataList={false}>
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={trend} margin={{ top: 12, right: 12, left: -22, bottom: 8 }}>
                   <CartesianGrid vertical={false} stroke="var(--chart-grid)" />
