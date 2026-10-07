@@ -1,6 +1,7 @@
 import os
 import json
 import random
+import re
 from datetime import datetime
 
 import numpy as np
@@ -8,12 +9,35 @@ import pandas as pd
 import joblib
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from sklearn.metrics import roc_auc_score
 
 app = Flask(__name__)
 CORS(app)
 
 MODEL_DIR = os.environ.get('FRAUD_MODEL_DIR', 'models')
 HISTORY_CSV = os.path.join(MODEL_DIR, 'risk_scored_transactions_2024.csv')
+TRANSACTIONS_CSV = os.path.join(MODEL_DIR, 'ticket_fraud_dataset_2020_2024.csv')
+
+
+def _transaction_index(frame):
+    ids = frame['transaction_id'].astype('string').str.strip().str.upper()
+    if ids.isna().any() or ids.eq('').any() or ids.duplicated().any():
+        raise ValueError('Transaction IDs must be present and unique after normalization.')
+    return frame.set_index(ids, drop=False)
+
+
+def _recommended_action(category):
+    return {'High': 'Priority inspection', 'Medium': 'Random spot-check'}.get(
+        category, 'No action needed')
+
+
+def _recommended_checks(ticket_type, flagged):
+    checks = ['Inspect ticket validity and dates']
+    if flagged:
+        checks.insert(0, 'Verify passenger identity with ID')
+    if 'concession' in ticket_type.lower():
+        checks.append('Check concession eligibility details')
+    return checks
 
 print('Loading fraud detection artifacts...')
 iso_forest = joblib.load(os.path.join(MODEL_DIR, 'isolation_forest.joblib'))
@@ -28,6 +52,11 @@ RECOMMENDED_THRESHOLD = float(META.get('recommended_risk_threshold', 50))
 MODEL_PERFORMANCE = META.get('model_performance')  # None unless notebook patch applied
 
 history_df = pd.read_csv(HISTORY_CSV, parse_dates=['date'])
+history_df['recommended_action'] = history_df['risk_category'].map(_recommended_action)
+transaction_index = _transaction_index(pd.read_csv(TRANSACTIONS_CSV, parse_dates=['date']))
+assessment_index = _transaction_index(history_df)
+if not assessment_index.index.isin(transaction_index.index).all():
+    raise ValueError('Every saved assessment must match a raw transaction.')
 HAS_PER_MODEL_SCORES = {'iso_score', 'ocsvm_score', 'autoencoder_score'}.issubset(history_df.columns)
 print(f'Loaded {len(history_df):,} historical scored transactions.')
 print('Per-model score columns present:', HAS_PER_MODEL_SCORES)
@@ -127,9 +156,7 @@ def predict_fraud_risk(txn_df, passenger_history=None):
     out['risk_category'] = [_category(s) for s in risk_score]
     out['suspected_fraud_type'] = d.apply(_suspected_type, axis=1).values
     out['reason_for_flagging'] = d.apply(_reason, axis=1).values
-    out['recommended_action'] = np.where(
-        out['risk_category'] == 'High', 'Priority inspection',
-        np.where(out['risk_category'] == 'Medium', 'Random spot-check', 'No action needed'))
+    out['recommended_action'] = out['risk_category'].map(_recommended_action)
     out['iso_score'] = np.round(n_iso, 3)
     out['ocsvm_score'] = np.round(n_ocsvm, 3)
     out['autoencoder_score'] = np.round(n_ae, 3)
@@ -280,10 +307,62 @@ def dashboard_summary():
         "recommended_risk_threshold": RECOMMENDED_THRESHOLD,
     })
 
+def _overview_date(name):
+    value = request.args.get(name)
+    if value is None:
+        return None
+    value = value.strip()
+    try:
+        if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', value):
+            raise ValueError()
+        return pd.Timestamp(datetime.strptime(value, '%Y-%m-%d'))
+    except ValueError:
+        raise InvalidRequestError(f'{name} must be a valid date in YYYY-MM-DD format.')
+
+
+def _historical_performance(df):
+    """Retrospective evaluation of saved scores, not a held-out model report."""
+    actual = df['is_fraud'].eq(1)
+    predicted = _flagged_mask(df)
+    tp = int((actual & predicted).sum())
+    fp = int((~actual & predicted).sum())
+    fn = int((actual & ~predicted).sum())
+    return {
+        'precision_pct': round(100 * tp / (tp + fp), 2) if tp + fp else None,
+        'recall_pct': round(100 * tp / (tp + fn), 2) if tp + fn else None,
+        'f1_pct': round(200 * tp / (2 * tp + fp + fn), 2) if 2 * tp + fp + fn else None,
+        'roc_auc': round(float(roc_auc_score(actual, df['risk_score'])), 4)
+        if actual.nunique() == 2 else None,
+        'sample_count': int(len(df)),
+        'risk_threshold': RECOMMENDED_THRESHOLD,
+        'evaluation': 'historical',
+    }
+
+
 @app.route('/fraud-detection/overview', methods=['GET'])
 def fraud_detection_overview():
+    start = _overview_date('start_date')
+    end = _overview_date('end_date')
+    if start is not None and end is not None and start > end:
+        raise InvalidRequestError('Start date must be on or before end date.')
+    search = request.args.get('search', '').strip()
+    available = {
+        'start_date': history_df['date'].min().strftime('%Y-%m-%d') if len(history_df) else None,
+        'end_date': history_df['date'].max().strftime('%Y-%m-%d') if len(history_df) else None,
+    }
     df = history_df.copy()
+    days = df['date'].dt.normalize()
+    if start is not None:
+        df = df.loc[days >= start]
+    if end is not None:
+        df = df.loc[days <= end]
+    if search:
+        matches = pd.Series(False, index=df.index)
+        for column in ['transaction_id', 'passenger_id', 'passenger_name', 'route']:
+            matches |= df[column].astype('string').str.contains(search, case=False, regex=False, na=False)
+        df = df.loc[matches]
     flagged_mask = _flagged_mask(df)
+    performance = _historical_performance(df)
 
     normal_vs_suspicious = {
         "normal": int((~flagged_mask).sum()),
@@ -294,7 +373,7 @@ def fraud_detection_overview():
 
     trend = (
         df.assign(month=df['date'].dt.to_period('M').astype(str))
-        .groupby('month')
+        .groupby('month')[['risk_score', 'is_fraud']]
         .apply(lambda g: pd.Series({
             "total_transactions": int(len(g)),
             "flagged_suspicious": int(_flagged_mask(g).sum()),
@@ -302,8 +381,8 @@ def fraud_detection_overview():
         }))
         .reset_index()
         .sort_values('month')
-    )
-    fraud_detection_trend = trend.to_dict(orient='records')
+    ) if len(df) else None
+    fraud_detection_trend = trend.to_dict(orient='records') if trend is not None else []
 
     recent_fraud_alerts = (
         df[df['risk_category'] == 'High']
@@ -315,7 +394,7 @@ def fraud_detection_overview():
     recent_fraud_alerts['date'] = recent_fraud_alerts['date'].dt.strftime('%Y-%m-%d')
 
     fraud_by_route = (
-        df.groupby('route')
+        df.groupby('route')[['risk_score']]
         .apply(lambda g: pd.Series({
             "total": int(len(g)),
             "flagged": int(_flagged_mask(g).sum()),
@@ -323,7 +402,7 @@ def fraud_detection_overview():
         }))
         .reset_index()
         .sort_values('fraud_rate_pct', ascending=False)
-    )
+    ) if len(df) else None
 
     return jsonify({
         "success": True,
@@ -331,7 +410,21 @@ def fraud_detection_overview():
         "fraud_type_distribution": fraud_type_distribution,
         "fraud_detection_trend": fraud_detection_trend,
         "recent_fraud_alerts": recent_fraud_alerts.to_dict(orient='records'),
-        "fraud_by_route": fraud_by_route.to_dict(orient='records'),
+        "fraud_by_route": fraud_by_route.to_dict(orient='records') if fraud_by_route is not None else [],
+        "summary": {
+            "total_ticket_transactions": int(len(df)),
+            "flagged_anomalies": int(flagged_mask.sum()),
+            "high_risk_passengers": int(df.loc[df['risk_category'] == 'High', 'passenger_id'].nunique()),
+            "fraud_detection_rate_pct": performance['recall_pct'],
+        },
+        "ticket_category_distribution": {key: int(value) for key, value in df['ticket_type'].value_counts().items()},
+        "model_performance": performance,
+        "available_date_range": available,
+        "applied_filters": {
+            "start_date": start.strftime('%Y-%m-%d') if start is not None else available['start_date'],
+            "end_date": end.strftime('%Y-%m-%d') if end is not None else available['end_date'],
+            "search": search,
+        },
     })
 
 @app.route('/anomaly-detection/overview', methods=['GET'])
@@ -434,6 +527,35 @@ def risk_analysis_overview():
         "risk_by_fraud_type": risk_by_fraud_type.to_dict(orient='records'),
     })
 
+@app.route('/passenger-verification/transaction', methods=['GET'])
+def passenger_verification_transaction():
+    transaction_id = request.args.get('transaction_id', '').strip().upper()
+    if not transaction_id:
+        raise InvalidRequestError('Ticket / Transaction ID is required.')
+    if transaction_id not in transaction_index.index:
+        return jsonify(success=False, error='Transaction not found'), 404
+
+    row = transaction_index.loc[transaction_id]
+    transaction = {field: str(row[field]) for field in (
+        'transaction_id', 'passenger_name', 'ticket_type', 'route', 'time')}
+    transaction['date'] = row['date'].strftime('%Y-%m-%d')
+    assessment = None
+    if transaction_id in assessment_index.index:
+        saved = assessment_index.loc[transaction_id]
+        flagged = bool(saved['risk_score'] >= RECOMMENDED_THRESHOLD)
+        assessment = {
+            'risk_score': float(saved['risk_score']),
+            'risk_category': str(saved['risk_category']),
+            'is_flagged_fraud': flagged,
+            'suspected_fraud_type': str(saved['suspected_fraud_type']),
+            'reason_for_flagging': str(saved['reason_for_flagging']),
+            'recommended_action': _recommended_action(saved['risk_category']),
+            'recommended_checks': _recommended_checks(transaction['ticket_type'], flagged),
+        }
+    return jsonify(success=True, transaction=transaction, assessment=assessment,
+                   assessment_status='assessed' if assessment else 'not_assessed')
+
+
 @app.route('/passenger-verification/list', methods=['GET'])
 def passenger_verification_list():
     df = history_df.copy()
@@ -451,9 +573,9 @@ def passenger_verification_list():
     if search:
         s = search.lower()
         df = df[
-            df['passenger_id'].astype(str).str.lower().str.contains(s) |
-            df['passenger_name'].astype(str).str.lower().str.contains(s) |
-            df['transaction_id'].astype(str).str.lower().str.contains(s)
+            df['passenger_id'].astype(str).str.lower().str.contains(s, regex=False) |
+            df['passenger_name'].astype(str).str.lower().str.contains(s, regex=False) |
+            df['transaction_id'].astype(str).str.lower().str.contains(s, regex=False)
         ]
 
     df = df.sort_values('risk_score', ascending=False)

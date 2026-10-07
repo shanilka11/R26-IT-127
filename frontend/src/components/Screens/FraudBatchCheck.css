@@ -201,3 +201,18 @@
 .fbc-input { border-radius: 5px; background: var(--bg-input); }
 .fbc-submit-btn { align-self: flex-start; margin-top: 20px; border-radius: 5px; background: var(--rail-blue); color: var(--button-text); }
 @media (max-width: 600px) { .fbc-page { padding: 35px 20px 60px; } .fbc-form { grid-template-columns: 1fr; } .fbc-stat-row { grid-template-columns: 1fr; } }
+
+.fraud-simulation { color: var(--text-primary); }
+.fraud-simulation .fbc-form { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.fraud-simulation label { display: flex; flex-direction: column; gap: 8px; color: var(--text-secondary); }
+.fraud-form-error { margin-top: 16px; color: var(--accent-red); }
+.fbc-result-modal .ant-modal-header, .fbc-result-modal .ant-modal-title { background: var(--bg-elevated); color: var(--text-primary); }
+.fbc-submit-btn:focus-visible, .fbc-table-wrap:focus-visible { outline: 3px solid var(--accent-blue); outline-offset: 3px; }
+.fbc-table-wrap { overflow-x: auto; }
+@media (max-width: 760px) {
+  .fraud-simulation .fbc-form { grid-template-columns: 1fr; }
+  .fbc-breakdown { grid-template-columns: 1fr; }
+}
+.fraud-simulation .fbc-mode { display: block; max-width: 320px; margin: 20px 0; }
+.fraud-simulation a { color: var(--accent-blue); }
+.fbc-saved-journey { padding: 16px; margin-bottom: 20px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-card); color: var(--text-primary); }
