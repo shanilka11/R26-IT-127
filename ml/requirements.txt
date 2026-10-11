@@ -1,0 +1,9 @@
+pandas
+numpy
+matplotlib
+pymoo
+streamlit
+scikit-learn
+joblib
+flask
+flask_cors
