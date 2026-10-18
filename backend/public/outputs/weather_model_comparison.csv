@@ -1,0 +1,4 @@
+class,baseline_MAE,weather_MAE,baseline_RMSE,weather_RMSE,baseline_MAPE,weather_MAPE
+1st Class,3.6169,3.7486,4.5301,4.5973,13.2346,13.7002
+2nd Class,21.5746,22.3385,26.9668,27.8107,13.2078,13.5874
+3rd Class,47.493,49.291,59.6011,61.4947,13.2572,13.6618

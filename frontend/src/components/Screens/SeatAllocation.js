@@ -30,7 +30,6 @@ const DemandForecast = () => {
 
   const [date, setDate] = useState('');
   const [isPublicHoliday, setIsPublicHoliday] = useState(false);
-  const [isCovidLockdown, setIsCovidLockdown] = useState(false);
 
   const [classCapacity, setClassCapacity] = useState({
     "1st Class": '', "2nd Class": '', "3rd Class": '',
@@ -114,7 +113,6 @@ const DemandForecast = () => {
           train_type: selectedService.train_type,
           distance_km: selectedService.distance_km,
           is_public_holiday: isPublicHoliday ? 1 : 0,
-          is_covid_lockdown_period: isCovidLockdown ? 1 : 0,
         },
         { headers: { "Content-Type": "application/json" } }
       );
@@ -175,14 +173,6 @@ const DemandForecast = () => {
             onChange={(e) => setIsPublicHoliday(e.target.checked)}
           />
           Public Holiday
-        </label>
-        <label className="df-checkbox">
-          <input
-            type="checkbox"
-            checked={isCovidLockdown}
-            onChange={(e) => setIsCovidLockdown(e.target.checked)}
-          />
-          COVID Lockdown Period
         </label>
       </div>
 

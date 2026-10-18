@@ -8,6 +8,7 @@ import TrainData from "./components/Screens/TrainData";
 import SeatAllocationDashboard from "./components/Screens/SeatAllocationDashboard";
 import Adaptivedemanddashboard from "./components/Screens/Adaptivedemanddashboard";
 import FraudDashboard from "./components/Screens/FraudDashboard";
+import VerificationAdmin from "./components/Screens/VerificationAdmin";
 import FraudBatchCheck from "./components/Screens/FraudBatchCheck";
 import DemandForecast from "./components/Screens/DemandForecast";
 import Settings from "./components/UserManagement/Settings";
@@ -39,6 +40,7 @@ class App extends Component {
                 <Route path="/DemandForecast" render={() => <DemandForecast />} />
                 <Route path="/dashboard" render={() => <Dashboard />} />
                 <Route path="/AllUsers" render={() => <AllUsers />} />
+                <Route path="/Admin/Verifications" render={() => <VerificationAdmin />} />
                 <Route path="/Admin" render={() => <Admin />} />
                 <Route path="/" render={() => <Dashboard />} />
               </Switch>

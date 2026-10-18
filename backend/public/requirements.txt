@@ -15,5 +15,6 @@ pyspellchecker
 gurulearn
 openpyxl
 numpy==1.26.4
+holidays==0.93
 
 #pip install -r requirements.txt

@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "source": "OpenStreetMap",
+    "source_reference": "https://www.openstreetmap.org/copyright",
+    "retrieval_note": "Station coordinates use mapped railway station locations where verified. Ratnapura uses its OpenStreetMap city place node as a city-level weather reference because no verified railway-platform coordinate was found.",
+    "coordinate_system": "WGS84",
+    "unresolved_stations": {
+      "Ratnapura railway platform": "No verified platform coordinate was found; the Ratnapura city place node below is used only as a city-level weather reference."
+    }
+  },
+  "stations": {
+    "Colombo Fort": {"latitude": 6.9337271, "longitude": 79.8500803, "osm_type": "way", "osm_id": 232514810, "confidence": "high"},
+    "Anuradhapura": {"latitude": 8.3444470, "longitude": 80.4108122, "osm_type": "way", "osm_id": 179220315, "confidence": "high"},
+    "Kandy": {"latitude": 7.2894112, "longitude": 80.6322495, "osm_type": "way", "osm_id": 258496237, "confidence": "high"},
+    "Galle": {"latitude": 6.0347250, "longitude": 80.2141782, "osm_type": "way", "osm_id": 1001155982, "confidence": "high"},
+    "Badulla": {"latitude": 6.9801227, "longitude": 81.0597165, "osm_type": "node", "osm_id": 13639995901, "confidence": "medium", "note": "OSM result is named Badulla Railway Station but is classified as an amenity/bus station."},
+    "Jaffna": {"latitude": 9.6654258, "longitude": 80.0212382, "osm_type": "way", "osm_id": 261547932, "confidence": "high"},
+    "Kurunegala": {"latitude": 7.4770479, "longitude": 80.3742480, "osm_type": "way", "osm_id": 510691515, "confidence": "high"},
+    "Matara": {"latitude": 5.9517629, "longitude": 80.5433995, "osm_type": "way", "osm_id": 401750623, "confidence": "high"},
+    "Negombo": {"latitude": 7.2102061, "longitude": 79.8418364, "osm_type": "way", "osm_id": 400381639, "confidence": "high"},
+    "Puttalam": {"latitude": 8.0226734, "longitude": 79.8378517, "osm_type": "way", "osm_id": 401412645, "confidence": "high"},
+    "Trincomalee": {"latitude": 8.5844138, "longitude": 81.2262012, "osm_type": "node", "osm_id": 1172969921, "confidence": "high"},
+    "Vavuniya": {"latitude": 8.7538660, "longitude": 80.4936629, "osm_type": "node", "osm_id": 9785228872, "confidence": "high"},
+    "Avissawella": {"latitude": 6.9545490, "longitude": 80.2070547, "osm_type": "node", "osm_id": 1128188513, "confidence": "high"},
+    "Batticaloa": {"latitude": 7.7244732, "longitude": 81.6987174, "osm_type": "way", "osm_id": 223241304, "confidence": "high"},
+    "Maradana": {"latitude": 6.9292373, "longitude": 79.8657960, "osm_type": "node", "osm_id": 5847983789, "confidence": "high"},
+    "Ratnapura": {
+      "latitude": 6.6803691,
+      "longitude": 80.4022975,
+      "osm_type": "node",
+      "osm_id": 637897018,
+      "confidence": "medium",
+      "location_type": "city_reference",
+      "source_reference": "https://www.openstreetmap.org/node/637897018",
+      "note": "Verified OSM place node for Ratnapura city (Nominatim: https://nominatim.openstreetmap.org/lookup?osm_ids=N637897018&format=jsonv2). This is a city-level gridded-weather reference, not a surveyed railway-platform coordinate; no railway station result was verified."
+    }
+  }
+}

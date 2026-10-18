@@ -1,4 +1,6 @@
 import json
+import hashlib
+from pathlib import Path
 import random
 
 import joblib
@@ -38,6 +40,13 @@ FEATURE_COLS = [
 ]
 
 FRAUD_THRESHOLD = 0.5
+FRAUD_ARTIFACT_HASH = hashlib.sha256(b''.join(
+    (Path(MODEL_DIR) / name).read_bytes() for name in [
+        'isolation_forest_simple.joblib', 'one_class_svm_simple.joblib',
+        'autoencoder_simple.joblib', 'label_encoders.joblib',
+        'simple_score_ranges.joblib', 'simulation_params.joblib'
+    ]
+)).hexdigest()
 
 app = Flask(__name__)
 CORS(app)
@@ -595,6 +604,14 @@ def seat_allocation():
 
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 400
+
+
+@app.route('/meta/fraud-simulation', methods=['GET'])
+def fraud_simulation_metadata():
+    return jsonify(success=True, routes=list(le_route.classes_),
+                   risk_tier_cutoffs={'medium': 0.4, 'high': 0.7},
+                   model_provenance={'model_id': 'legacy_fraud_ensemble',
+                                     'score_scale': '0-1', 'artifact_sha256': FRAUD_ARTIFACT_HASH})
 
 
 @app.route('/health', methods=['GET'])

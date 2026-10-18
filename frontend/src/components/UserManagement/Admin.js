@@ -62,8 +62,9 @@ function Admin() {
         >
           Account Settings
         </Button>
-        <br />
-        <br />
+        <br /><br />
+        <Button onClick={() => history.push("/Admin/Verifications")}>Verification History</Button>
+        <p className="admin-copy">Local demo attribution; staff permissions are not enforced.</p>
       </Card>
     </div>
   );

@@ -30,3 +30,4 @@ app.get('/', (req, res) => {
 app.use('/user',userRoutes)
 app.use('/file',fileRoutes)
 app.use('/train',trainRoutes)
+app.use(require('./verification/router').createRouter())

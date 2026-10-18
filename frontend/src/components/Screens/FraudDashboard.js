@@ -1,30 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import ButterToast, { Cinnamon } from 'butter-toast';
-import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import axios from 'axios';
+import { useHistory, useLocation } from 'react-router-dom';
 import LocalIP from './../LocalIP';
 import './FraudDashboard.css';
+import FraudSimulation from './FraudSimulation';
+import FraudDetectionOverview from './FraudDetectionOverview';
 
 const API = `${LocalIP}:5555`;
 
-const raiseError = (title, content) => {
-  ButterToast.raise({
-    content: (
-      <Cinnamon.Crisp
-        title={title}
-        content={content}
-        scheme={Cinnamon.Crisp.SCHEME_RED}
-        icon={<ErrorOutlineIcon />}
-      />
-    ),
-  });
-};
-
-const tierClass = (tier) => `tier-${(tier || '').toLowerCase().replace(/\s+/g, '-')}`;
-
 const TABS = [
   { key: 'main', label: 'Main Dashboard' },
-  { key: 'fraud', label: 'Fraud Detection' },
   { key: 'anomaly', label: 'Anomaly Detection' },
   { key: 'risk', label: 'Risk Analysis' },
   { key: 'workload', label: 'Inspection Workload' },
@@ -115,98 +100,6 @@ function useApiGet(path, deps = []) {
 
   return { data, loading, error, reload };
 }
-
-const MainDashboardTab = () => {
-  const { data, loading, error } = useApiGet('/dashboard/summary');
-  if (loading) return <LoadingBlock />;
-  if (error) return <ErrorBlock msg={error} />;
-  return (
-    <div className="fd-kpi-grid">
-      <KpiCard label="Total Ticket Transactions" value={data.total_ticket_transactions.toLocaleString()} />
-      <KpiCard label="Suspicious Transactions" value={data.suspicious_transactions.toLocaleString()} tone="amber" />
-      <KpiCard label="High-Risk Passengers" value={data.high_risk_passengers.toLocaleString()} tone="red" />
-      <KpiCard label="Fraud Detection Rate" value={`${data.fraud_detection_rate_pct}%`} tone="green" />
-      <KpiCard label="Average Risk Score" value={data.average_risk_score} />
-      <KpiCard label="Passengers Flagged for Inspection" value={data.passengers_flagged_for_inspection.toLocaleString()} tone="amber" />
-    </div>
-  );
-};
-
-const FraudDetectionTab = () => {
-  const { data, loading, error } = useApiGet('/fraud-detection/overview');
-  if (loading) return <LoadingBlock />;
-  if (error) return <ErrorBlock msg={error} />;
-
-  return (
-    <div className="fd-section-grid">
-      <div className="fd-card">
-        <h3>Normal vs Suspicious Transactions</h3>
-        <Donut
-          segments={[
-            { label: 'Normal', value: data.normal_vs_suspicious.normal, color: 'var(--accent-blue)' },
-            { label: 'Suspicious', value: data.normal_vs_suspicious.suspicious, color: 'var(--accent-red)' },
-          ]}
-        />
-      </div>
-
-      <div className="fd-card">
-        <h3>Fraud Type Distribution</h3>
-        <BarList
-          data={Object.entries(data.fraud_type_distribution).map(([k, v]) => ({ type: k, count: v }))}
-          labelKey="type"
-          valueKey="count"
-          colorFn={() => 'var(--accent-purple)'}
-        />
-      </div>
-
-      <div className="fd-card fd-card-wide">
-        <h3>Fraud Detection Trend</h3>
-        <BarList
-          data={data.fraud_detection_trend.map((m) => ({ label: m.month, count: m.actual_fraud }))}
-          labelKey="label"
-          valueKey="count"
-          colorFn={() => 'var(--accent-red)'}
-        />
-      </div>
-
-      <div className="fd-card">
-        <h3>Fraud by Route</h3>
-        <BarList
-          data={data.fraud_by_route}
-          labelKey="route"
-          valueKey="fraud_rate_pct"
-          colorFn={() => 'var(--accent-amber)'}
-        />
-      </div>
-
-      <div className="fd-card fd-card-wide">
-        <h3>Recent Fraud Alerts</h3>
-        <div className="fd-table-wrap">
-          <table className="fd-table">
-            <thead>
-              <tr>
-                <th>Transaction</th><th>Passenger</th><th>Date</th><th>Route</th>
-                <th>Risk Score</th><th>Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.recent_fraud_alerts.map((a) => (
-                <tr key={a.transaction_id} className="fd-row-flagged">
-                  <td>{a.transaction_id}</td>
-                  <td>{a.passenger_name}</td>
-                  <td>{a.date}</td>
-                  <td>{a.route}</td>
-                  <td>{a.risk_score}</td>
-                  <td>{a.suspected_fraud_type}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const AnomalyDetectionTab = () => {
   const { data, loading, error } = useApiGet('/anomaly-detection/overview');
@@ -316,156 +209,34 @@ const InspectionWorkloadTab = () => {
   );
 };
 
-const FuturePredictionTab = () => {
-  const [routes, setRoutes] = useState([]);
-  const [trainRoute, setTrainRoute] = useState('');
-  const [date, setDate] = useState('');
-  const [nPassengers, setNPassengers] = useState('40');
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
+const FraudDashboard = () => {
+  const history = useHistory();
+  const location = useLocation();
+  const requestedTab = new URLSearchParams(location.search).get('tab');
+  const activeTab = TABS.some((tab) => tab.key === requestedTab) ? requestedTab : 'main';
 
   useEffect(() => {
-    axios.get(`${API}/meta/options`).then((res) => setRoutes(res.data.routes || []));
-  }, []);
-
-  const validation = () => {
-    if (!trainRoute) { raiseError('Validation Error!', 'Please select a train route.'); return false; }
-    if (!date) { raiseError('Validation Error!', 'Please select a date.'); return false; }
-    if (!nPassengers || Number(nPassengers) <= 0) {
-      raiseError('Validation Error!', 'Passenger count must be a positive number.');
-      return false;
+    if (requestedTab === 'fraud') {
+      const params = new URLSearchParams(location.search);
+      params.set('tab', 'main');
+      history.replace({ ...location, search: `?${params.toString()}` });
     }
-    return true;
+  }, [history, location, requestedTab]);
+
+  const selectTab = (key) => {
+    if (key === activeTab) return;
+    const params = new URLSearchParams(location.search);
+    params.set('tab', key);
+    history.push({ ...location, search: `?${params.toString()}` });
   };
-
-  const handleSubmit = async () => {
-    if (!validation()) return;
-    setLoading(true);
-    setResult(null);
-    try {
-      const res = await axios.post(`${API}/predict_batch`, {
-        train_route: trainRoute,
-        date,
-        n_passengers: Number(nPassengers),
-      }, { headers: { 'Content-Type': 'application/json' } });
-
-      if (res.data.success) {
-        setResult(res.data);
-      } else {
-        raiseError('Prediction Failed', res.data.error || 'Something went wrong.');
-      }
-    } catch (err) {
-      raiseError('Network Error!', 'Could not reach the server. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const todayStr = new Date().toISOString().slice(0, 10);
-
-  return (
-    <div className="fd-card fd-card-wide">
-      <p className="fd-muted" style={{ marginBottom: 16 }}>
-        Select an upcoming route &amp; date to simulate expected ticket transactions and see
-        the model's predicted fraud exposure before the service runs.
-      </p>
-
-      <div className="fbc-form">
-        <select className="fbc-input" value={trainRoute} onChange={(e) => setTrainRoute(e.target.value)}>
-          <option value="">Select Train Route</option>
-          {routes.map((r) => <option key={r} value={r}>{r}</option>)}
-        </select>
-
-        <input
-          className="fbc-input"
-          type="date"
-          min={todayStr}
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-        />
-
-        <input
-          className="fbc-input"
-          type="number"
-          min="1"
-          placeholder="Number of Passengers"
-          value={nPassengers}
-          onChange={(e) => setNPassengers(e.target.value)}
-        />
-      </div>
-
-      <button className="fbc-submit-btn" onClick={handleSubmit} disabled={loading} style={{ marginTop: 20 }}>
-        {loading ? 'Running Simulation...' : 'Run Simulation'}
-      </button>
-
-      {result && (
-        <div className="fbc-result" style={{ marginTop: 28 }}>
-          <h3 className="fbc-result-title">
-            {result.summary.train_route} · {result.summary.date} ({result.summary.day_of_week})
-          </h3>
-
-          <div className="fbc-stat-row">
-            <div className="fbc-stat-card"><span>Total Passengers</span><strong>{result.summary.total_passengers}</strong></div>
-            <div className="fbc-stat-card"><span>Flagged as Fraud</span><strong className="fbc-stat-danger">{result.summary.predicted_fraud_count}</strong></div>
-            <div className="fbc-stat-card"><span>Fraud Rate</span><strong className="fbc-stat-danger">{result.summary.fraud_rate_pct}%</strong></div>
-          </div>
-
-          <div className="fbc-breakdown">
-            <div>
-              <p className="fbc-breakdown-label">Risk Tier Breakdown</p>
-              <div className="fbc-chip-row">
-                {Object.entries(result.summary.risk_tier_breakdown).map(([tier, count]) => (
-                  <span key={tier} className={`fbc-chip ${tierClass(tier)}`}>{tier}: {count}</span>
-                ))}
-              </div>
-            </div>
-            {Object.keys(result.summary.fraud_type_breakdown).length > 0 && (
-              <div>
-                <p className="fbc-breakdown-label">Fraud Type Breakdown</p>
-                <div className="fbc-chip-row">
-                  {Object.entries(result.summary.fraud_type_breakdown).map(([type, count]) => (
-                    <span key={type} className="fbc-chip tier-flagged">{type}: {count}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <p className="fbc-breakdown-label" style={{ marginTop: 20 }}>Transactions</p>
-          <div className="fbc-table-wrap">
-            <table className="fbc-table">
-              <thead>
-                <tr><th>Transaction</th><th>Risk Score</th><th>Risk Tier</th><th>Fraud Type</th></tr>
-              </thead>
-              <tbody>
-                {result.predictions.map((p) => (
-                  <tr key={p.transaction_id} className={p.is_flagged_fraud ? 'fbc-row-flagged' : ''}>
-                    <td>{p.transaction_id}</td>
-                    <td>{p.ensemble_risk_score}</td>
-                    <td><span className={`fbc-chip ${tierClass(p.risk_tier)}`}>{p.risk_tier}</span></td>
-                    <td>{p.likely_fraud_type}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-const FraudDashboard = () => {
-  const [activeTab, setActiveTab] = useState('main');
 
   const renderTab = () => {
     switch (activeTab) {
-      case 'main': return <MainDashboardTab />;
-      case 'fraud': return <FraudDetectionTab />;
+      case 'main': return <FraudDetectionOverview />;
       case 'anomaly': return <AnomalyDetectionTab />;
       case 'risk': return <RiskAnalysisTab />;
       case 'workload': return <InspectionWorkloadTab />;
-      case 'predict': return <FuturePredictionTab />;
+      case 'predict': return <FraudSimulation />;
       default: return null;
     }
   };
@@ -479,8 +250,10 @@ const FraudDashboard = () => {
         {TABS.map((t) => (
           <button
             key={t.key}
+            type="button"
+            aria-pressed={activeTab === t.key}
             className={`fd-tab ${activeTab === t.key ? 'fd-tab-active' : ''}`}
-            onClick={() => setActiveTab(t.key)}
+            onClick={() => selectTab(t.key)}
           >
             {t.label}
           </button>
