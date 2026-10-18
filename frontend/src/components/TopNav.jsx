@@ -28,6 +28,16 @@ export function TopNav({ page, onChange, theme, onToggleTheme }) {
         >
           Journey Planner Map
         </button>
+        <button
+          className={`rounded-xl px-4 py-2.5 text-left text-sm font-semibold transition ${
+            page === "research"
+              ? "bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-lg shadow-teal-900/40 ring-1 ring-teal-300/40"
+              : "bg-slate-900/80 text-slate-200 ring-1 ring-slate-700/70 hover:bg-slate-800"
+          }`}
+          onClick={() => onChange("research")}
+        >
+          AI Research Lab
+        </button>
       </div>
       <button className="btn-ghost-dark relative text-left ring-1 ring-slate-700/80 hover:ring-teal-500/40" onClick={onToggleTheme}>
         Switch to {theme === "dark" ? "Light" : "Dark"} Mode

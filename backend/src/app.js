@@ -6,6 +6,7 @@ import telemetryRoute from "./routes/telemetry.js";
 import predictionsRoute from "./routes/predictions.js";
 import journeyRoute from "./routes/journey.js";
 import ingestRoute from "./routes/ingest.js";
+import researchRoute from "./routes/research.js";
 
 const app = express();
 app.use(cors());
@@ -18,6 +19,7 @@ app.use("/api/telemetry", telemetryRoute);
 app.use("/api/predictions", predictionsRoute);
 app.use("/api/journey", journeyRoute);
 app.use("/api/ingest", ingestRoute);
+app.use("/api/research", researchRoute);
 
 app.use((err, _req, res, _next) => res.status(500).json({ message: err.message }));
 
