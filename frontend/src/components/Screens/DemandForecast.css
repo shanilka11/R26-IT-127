@@ -222,6 +222,29 @@
 .df-table th { color: var(--text-secondary); font-size: 12px; text-transform: uppercase; }
 .df-total-row td { font-weight: 700; border-bottom: 0; }
 .df-chart { min-width: 0; }
+.df-weather-note { color: var(--text-secondary); margin: -4px 0 18px; font-size: 13px; }
+.df-weather-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.df-weather-item { display: grid; gap: 6px; padding: 16px; background: var(--bg-elevated); border: 1px solid var(--rail-line); border-radius: 8px; color: var(--text-secondary); font-size: 13px; }
+.df-weather-item strong { color: var(--text-primary); }
+.df-analysis-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.df-analysis-card { display: flex; flex-direction: column; gap: 12px; }
+.df-chart-header { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; margin-bottom: 6px; }
+.df-chart-header h2 { margin: 0; font-size: 1.05rem; }
+.df-chart-subtitle { margin: 6px 0 0; color: var(--text-secondary); font-size: 12px; line-height: 1.5; }
+.df-chart-context { display: inline-flex; align-items: center; padding: 6px 10px; border-radius: 999px; background: rgba(37, 99, 235, 0.08); color: #1D4ED8; font-size: 11px; font-weight: 600; }
+.df-chart-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 6px; }
+.df-chart-legend-item { display: inline-flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 12px; }
+.df-chart-legend-swatch { display: inline-block; flex: 0 0 auto; width: 12px; height: 12px; border: 1px solid transparent; border-radius: 4px; }
+.df-chart-legend-marker { width: 10px; height: 10px; border-radius: 50%; }
+.df-chart-legend-line { width: 20px; height: 0; border: 0; border-top: 2px dashed currentColor; border-radius: 0; }
+.df-chart-legend-gradient { width: 30px; height: 10px; border: 0; }
+.df-chart-tooltip { background: rgba(15, 23, 42, 0.96); color: #F8FAFC; border: 1px solid rgba(148, 163, 184, 0.35); border-radius: 10px; padding: 10px 12px; box-shadow: 0 14px 30px rgba(15, 23, 42, 0.18); font-size: 12px; }
+.df-chart-tooltip strong { display: block; margin-bottom: 8px; font-size: 13px; }
+.df-chart-tooltip div + div { margin-top: 3px; }
+.df-chart-empty { min-height: 180px; display: grid; place-items: center; padding: 24px; color: var(--text-secondary); text-align: center; background: var(--bg-elevated); border: 1px dashed var(--rail-line); border-radius: 8px; font-size: 13px; line-height: 1.5; }
+.df-chart-note { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.5; }
 .df-state { color: var(--text-secondary); padding: 32px 0; }
 .df-error { color: var(--danger, #ef6b73); }
 @media (max-width: 700px) { .df-summary-grid { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .df-analysis-grid { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { .df-weather-grid { grid-template-columns: 1fr; } .df-chart-header { flex-direction: column; } }

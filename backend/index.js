@@ -15,16 +15,7 @@ let port = process.env.PORT || 4000;
 app.listen(port,()=>console.log('Server started at : 4000'))
 
 app.get('/', (req, res) => {
-    res
-    .status(200)
-    .send('Hello server is running')
-    .end();
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); // If needed
-    res.setHeader('Access-Control-Allow-Credentials', true); // If needed
-
-    res.send('cors problem fixed:)');
+    res.status(200).send('Hello server is running');
 });
 
 app.use('/user',userRoutes)

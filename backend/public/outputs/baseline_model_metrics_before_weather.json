@@ -1,0 +1,22 @@
+{
+  "description": "Previously recorded baseline metrics before weather enhancement",
+  "artifact_status": "Original baseline model artifact was overwritten and is not independently preserved.",
+  "evaluation_context": "Previously recorded comparable mapped 2024 test subset",
+  "metrics": {
+    "1st Class": {
+      "MAE": 3.6169,
+      "RMSE": 4.5301,
+      "MAPE": 13.2346
+    },
+    "2nd Class": {
+      "MAE": 21.5746,
+      "RMSE": 26.9668,
+      "MAPE": 13.2078
+    },
+    "3rd Class": {
+      "MAE": 47.493,
+      "RMSE": 59.6011,
+      "MAPE": 13.2572
+    }
+  }
+}

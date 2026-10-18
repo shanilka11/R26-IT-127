@@ -1,0 +1,70 @@
+{
+  "feature_cols": [
+    "route_enc",
+    "train_type_enc",
+    "class_enc",
+    "line_name_enc",
+    "day_type_enc",
+    "distance_km",
+    "seat_capacity",
+    "is_public_holiday",
+    "month",
+    "dayofweek",
+    "day",
+    "weekofyear",
+    "is_weekend",
+    "month_sin",
+    "month_cos",
+    "dow_sin",
+    "dow_cos",
+    "lag_1",
+    "lag_7",
+    "roll_mean_7",
+    "roll_mean_30",
+    "average_temperature",
+    "total_route_precipitation",
+    "total_route_rain",
+    "total_route_precipitation_hours",
+    "average_route_wind_speed"
+  ],
+  "target": "tickets_sold",
+  "model": "RandomForestRegressor",
+  "n_estimators": 300,
+  "max_depth": 14,
+  "random_state": 42,
+  "training_period": "2020-01-01 to 2023-12-31",
+  "testing_period": "2024-01-01 to 2024-12-31",
+  "leakage_safe_lag_initialization": "lag_1=0 when unavailable; lag_7 uses expanding mean of prior observations only; rolling means use shifted prior observations and zero when unavailable",
+  "covid_feature_removed": true,
+  "weather_source": "Open-Meteo ERA5 archive",
+  "historical_weather_file": "ml/demand/weather/open_meteo_historical_station_weather_2020_2024.csv",
+  "demand_rows_before_weather_join": 55302,
+  "demand_rows_after_weather_join": 51627,
+  "demand_rows_excluded_due_to_weather": 3675,
+  "demand_rows_excluded_pct": 6.6453,
+  "excluded_reason": "Colombo Fort -> Ratnapura records were excluded during training because no verified railway-station coordinate and joined historical station-weather records were configured then. A Ratnapura city-reference coordinate is now configured for runtime weather; this trained model still does not contain the route in its encoder and must not be treated as supporting Ratnapura demand predictions.",
+  "excluded_route": "Colombo Fort -> Ratnapura",
+  "mapped_station_count": 15,
+  "runtime_mapped_station_count": 16,
+  "class_metrics": [
+    {
+      "class": "1st Class",
+      "MAE": 3.7486,
+      "RMSE": 4.5973,
+      "MAPE": 13.7002
+    },
+    {
+      "class": "2nd Class",
+      "MAE": 22.3385,
+      "RMSE": 27.8107,
+      "MAPE": 13.5874
+    },
+    {
+      "class": "3rd Class",
+      "MAE": 49.291,
+      "RMSE": 61.4947,
+      "MAPE": 13.6618
+    }
+  ],
+  "baseline_metrics_file": "baseline_model_metrics_before_weather.json"
+}

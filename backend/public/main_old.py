@@ -230,7 +230,6 @@ def build_demand_feature_row(input_dict, travel_class, seat_capacity):
         "week_of_year": int(d.isocalendar().week),
         "is_weekend": int(d.dayofweek >= 5),
         "is_public_holiday": int(input_dict.get("is_public_holiday", 0)),
-        "is_covid_lockdown_period": int(input_dict.get("is_covid_lockdown_period", 0)),
         "distance_km": input_dict["distance_km"],
         "seat_capacity": seat_capacity,
     }
@@ -494,7 +493,6 @@ def predict_demand():
         "train_type": "Intercity",
         "distance_km": 121,
         "is_public_holiday": 1,                 # optional, default 0
-        "is_covid_lockdown_period": 0,           # optional, default 0
         "class_capacity": {                      # optional, overrides default split
             "1st Class": 40, "2nd Class": 225, "3rd Class": 485
         }
@@ -547,7 +545,6 @@ def seat_allocation():
         "train_type": "Intercity",
         "distance_km": 121,
         "is_public_holiday": 1,                 # optional, default 0
-        "is_covid_lockdown_period": 0,           # optional, default 0
         "total_capacity": 750,                   # optional, defaults to train_type base capacity
         "class_capacity": {...},                 # optional, per-class physical max seats
         "min_class_capacity": {...},             # optional, per-class minimum floor (fairness)

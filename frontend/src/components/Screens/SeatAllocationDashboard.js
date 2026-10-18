@@ -7,6 +7,8 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from 'recharts';
 import LocalIP from './../LocalIP';
+import useSriLankanHolidays from '../../hooks/useSriLankanHolidays';
+import getApiErrorMessage from '../../utils/apiErrorMessage';
 import './Adaptivedemanddashboard.css';
 
 const FLASK_API_BASE = `${LocalIP}:4444`;
@@ -88,12 +90,13 @@ const AdaptiveDemandDashboard = () => {
 
   const [date, setDate] = useState('');
   const [isPublicHoliday, setIsPublicHoliday] = useState(false);
-  const [isCovidLockdown, setIsCovidLockdown] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [prediction, setPrediction] = useState(null); // raw /predict_demand response
   const [actualByClass, setActualByClass] = useState(null); // {class: number} | null
   const [actualError, setActualError] = useState(false);
+  const { holidayDates, loading: holidayCalendarLoading, error: holidayCalendarError } =
+    useSriLankanHolidays(FLASK_API_BASE, date);
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -105,13 +108,17 @@ const AdaptiveDemandDashboard = () => {
           raiseError('Failed to Load Trains', 'Could not load the list of trains from the server.');
         }
       } catch (err) {
-        raiseError('Network Error!', 'Could not reach the server to load train services.');
+        raiseError('Train Services Failed', getApiErrorMessage(err, 'Train services'));
       } finally {
         setServicesLoading(false);
       }
     };
     fetchServices();
   }, []);
+
+  useEffect(() => {
+    if (holidayDates[date] !== undefined) setIsPublicHoliday(holidayDates[date]);
+  }, [date, holidayDates]);
 
   const handleServiceChange = (e) => {
     const id = e.target.value;
@@ -130,6 +137,13 @@ const AdaptiveDemandDashboard = () => {
       raiseError('Validation Error!', 'Date is required!');
       return false;
     }
+    if (holidayCalendarLoading || holidayCalendarError) {
+      raiseError(
+        'Public Holiday Lookup Failed',
+        holidayCalendarError || 'Wait for the public holiday calendar to finish loading.'
+      );
+      return false;
+    }
     return true;
   };
 
@@ -143,12 +157,19 @@ const AdaptiveDemandDashboard = () => {
           date: forDate,
         },
       });
-      if (res.data && res.data.success) {
+      if (res.data?.success && (res.data.available === true || res.data.available === undefined)
+        && ['1c', '2c', '3c'].every((key) => res.data[key] !== undefined && res.data[key] !== null)) {
+        const actualCounts = ['1c', '2c', '3c'].map((key) => Number(res.data[key]));
+        if (!actualCounts.every(Number.isFinite)) {
+          setActualByClass(null);
+          setActualError(true);
+          return;
+        }
         // Transform database fields (1c, 2c, 3c) to class-based object
         const actualByClassMap = {
-          '1st Class': res.data['1c'] || 0,
-          '2nd Class': res.data['2c'] || 0,
-          '3rd Class': res.data['3c'] || 0,
+          '1st Class': actualCounts[0],
+          '2nd Class': actualCounts[1],
+          '3rd Class': actualCounts[2],
         };
         setActualByClass(actualByClassMap);
         setActualError(false);
@@ -159,6 +180,7 @@ const AdaptiveDemandDashboard = () => {
     } catch (err) {
       setActualByClass(null);
       setActualError(true);
+      raiseError('Actual Demand Failed', getApiErrorMessage(err, 'Actual demand'));
     }
   };
 
@@ -180,8 +202,8 @@ const AdaptiveDemandDashboard = () => {
           line_name: selectedService.line_name,
           train_type: selectedService.train_type,
           distance_km: selectedService.distance_km,
-          is_public_holiday: isPublicHoliday ? 1 : 0,
-          is_covid_lockdown_period: isCovidLockdown ? 1 : 0,
+          is_public_holiday: isPublicHoliday || holidayDates[date] ? 1 : 0,
+          class_capacity: selectedService.default_capacity,
         },
         { headers: { 'Content-Type': 'application/json' } }
       );
@@ -193,7 +215,7 @@ const AdaptiveDemandDashboard = () => {
         raiseError('Prediction Failed', res.data.error || 'Something went wrong.');
       }
     } catch (err) {
-      raiseError('Network Error!', 'Could not reach the prediction server. Please try again.');
+      raiseError('Prediction Failed', getApiErrorMessage(err, 'Demand prediction'));
     } finally {
       setLoading(false);
     }
@@ -235,6 +257,7 @@ const AdaptiveDemandDashboard = () => {
       Actual: actualByClass ? (actualByClass[c] ?? 0) : null,
     }));
   }, [predictedByClass, actualByClass]);
+  const selectedHoliday = Boolean(isPublicHoliday || holidayDates[date]);
 
   const allocation = useMemo(() => {
     if (!predictedByClass || !capacityByClass) return null;
@@ -265,31 +288,34 @@ const AdaptiveDemandDashboard = () => {
           className="add-input"
           type="date"
           value={date}
-          onChange={(e) => setDate(e.target.value)}
+          onChange={(e) => {
+            setDate(e.target.value);
+            setIsPublicHoliday(false);
+            setPrediction(null);
+            setActualByClass(null);
+          }}
         />
 
         <label className="add-checkbox">
           <input
             type="checkbox"
-            checked={isPublicHoliday}
-            onChange={(e) => setIsPublicHoliday(e.target.checked)}
+            checked={selectedHoliday}
+            onChange={(e) => {
+              setIsPublicHoliday(holidayDates[date] ? true : e.target.checked);
+              setPrediction(null);
+              setActualByClass(null);
+            }}
           />
           Public Holiday
         </label>
 
-        <label className="add-checkbox">
-          <input
-            type="checkbox"
-            checked={isCovidLockdown}
-            onChange={(e) => setIsCovidLockdown(e.target.checked)}
-          />
-          COVID Lockdown Period
-        </label>
 
-        <button className="add-run-btn" onClick={handleRun} disabled={loading}>
+        <button className="add-run-btn" onClick={handleRun} disabled={loading || holidayCalendarLoading || Boolean(holidayCalendarError)}>
           {loading ? 'Running...' : 'Run'}
         </button>
       </div>
+      {holidayCalendarLoading && date && <div className="add-state">Loading Sri Lankan public holiday calendar...</div>}
+      {holidayCalendarError && <div className="add-state add-error">Public holiday calendar unavailable: {holidayCalendarError}</div>}
 
       {selectedService && (
         <div className="add-route-summary">
@@ -301,6 +327,7 @@ const AdaptiveDemandDashboard = () => {
 
       {prediction && (
         <div className="add-grid">
+          <p className="add-hint-warning">Predicted passenger counts are trained-model estimates. Actual counts appear only when an actual-demand record exists.</p>
           {/* --- Donut: Demand by Travel Class (Predicted) --- */}
           <div className="add-card add-chart-card">
             <h3 className="add-card-title">Demand by Travel Class (Predicted)</h3>
